@@ -1,0 +1,298 @@
+{
+  "Producers": [
+    {
+      "addr": "54.220.20.40",
+      "port": 3002,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "IE"
+    },
+    {
+      "addr": "relays.mainnet.stakenuts.com",
+      "port": 3001,
+      "valency": 1,
+      "continent": "Asia",
+      "state": "JP"
+    },
+    {
+      "addr": "relay.zenithpool.io",
+      "port": 31400,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "DE"
+    },
+    {
+      "addr": "relay-1.stakepool.at",
+      "port": 3001,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "AT"
+    },
+    {
+      "addr": "relay-2.stakepool.at",
+      "port": 3001,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "DE"
+    },
+    {
+      "addr": "relays.stakepool.at",
+      "port": 3001,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "AT"
+    },
+    {
+      "addr": "relay2.cryptobounty.org",
+      "port": 8082,
+      "valency": 1,
+      "continent": "North America",
+      "state": "Wyoming"
+    },
+    {
+      "addr": "relay1.cryptobounty.org",
+      "port": 8081,
+      "valency": 1,
+      "continent": "North America",
+      "state": "Wyoming"
+    },
+    {
+      "addr": "relay0.bluecheesestakehouse.com",
+      "port": 5000,
+      "valency": 1,
+      "continent": "North America",
+      "state": "Florida"
+    },
+    {
+      "addr": "relay1.bluecheesestakehouse.com",
+      "port": 5001,
+      "valency": 1,
+      "continent": "North America",
+      "state": "Florida"
+    },
+    {
+      "addr": "relay2.bluecheesestakehouse.com",
+      "port": 5002,
+      "valency": 1,
+      "continent": "North America",
+      "state": "Florida"
+    },
+    {
+      "addr": "45.83.107.139",
+      "port": 3001,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "DE"
+    },
+    {
+      "addr": "45.83.107.231",
+      "port": 3001,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "DE"
+    },
+    {
+      "addr": "relay-2.teqwyse.com",
+      "port": 3000,
+      "valency": 1,
+      "continent": "North America",
+      "state": "Illinois"
+    },
+    {
+      "addr": "relay1-pub.ahlnet.nu",
+      "port": 2111,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "SE"
+    },
+    {
+      "addr": "cardano-mainnet-relays.eastus2.cloudapp.azure.com",
+      "port": 3013,
+      "valency": 1,
+      "continent": "North America",
+      "state": "Virginia"
+    },
+    {
+      "addr": "3.129.162.200",
+      "port": 3001,
+      "valency": 1,
+      "continent": "North America",
+      "state": "Ohio"
+    },
+    {
+      "addr": "relay2-pub.ahlnet.nu",
+      "port": 2111,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "SE"
+    },
+    {
+      "addr": "eu.relays.cardanians.io",
+      "port": 1000,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "DE"
+    },
+    {
+      "addr": "ca.relays.cardanians.io",
+      "port": 1000,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "DE"
+    },
+    {
+      "addr": "pool.cardanoproxy.com",
+      "port": 31201,
+      "valency": 1,
+      "continent": "North America",
+      "state": "Ohio"
+    },
+    {
+      "addr": "pool.cardanoproxy.com",
+      "port": 31206,
+      "valency": 1,
+      "continent": "North America",
+      "state": "Ohio"
+    },
+    {
+      "addr": "r1.dolcapool.eu",
+      "port": 3008,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "CZ"
+    },
+    {
+      "addr": "node1.stakelove.com",
+      "port": 6000,
+      "valency": 1,
+      "continent": "North America",
+      "state": "Oregon"
+    },
+    {
+      "addr": "node2.stakelove.com",
+      "port": 6000,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "DE"
+    },
+    {
+      "addr": "159.65.233.130",
+      "port": 3002,
+      "valency": 1,
+      "continent": "North America",
+      "state": "New Jersey"
+    },
+    {
+      "addr": "45.132.247.147",
+      "port": 3001,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "DE"
+    },
+    {
+      "addr": "52.60.229.239",
+      "port": 3001,
+      "valency": 1,
+      "continent": "North America",
+      "state": "CA"
+    },
+    {
+      "addr": "99.79.18.4",
+      "port": 3001,
+      "valency": 1,
+      "continent": "North America",
+      "state": "CA"
+    },
+    {
+      "addr": "3.96.120.27",
+      "port": 3001,
+      "valency": 1,
+      "continent": "North America",
+      "state": "CA"
+    },
+    {
+      "addr": "3.96.88.14",
+      "port": 3001,
+      "valency": 1,
+      "continent": "North America",
+      "state": "CA"
+    },
+    {
+      "addr": "relay1-eu.riotpools.com",
+      "port": 4001,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "FR"
+    },
+    {
+      "addr": "relays-can-ada-io.cloudns.cl",
+      "port": 55444,
+      "valency": 1,
+      "continent": "North America",
+      "state": "Oregon"
+    },
+    {
+      "addr": "167.71.63.99",
+      "port": 8081,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "DE"
+    },
+    {
+      "addr": "104.248.18.79",
+      "port": 8081,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "DE"
+    },
+    {
+      "addr": "168.119.53.203",
+      "port": 3001,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "DE"
+    },
+    {
+      "addr": "kaya.relay.staking.outofbits.com",
+      "port": 3333,
+      "valency": 1,
+      "continent": "North America",
+      "state": "Florida"
+    },
+    {
+      "addr": "lin.relay.staking.outofbits.com",
+      "port": 3333,
+      "valency": 1,
+      "continent": "Asia",
+      "state": "SG"
+    },
+    {
+      "addr": "toki.relay.staking.outofbits.com",
+      "port": 3333,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "DE"
+    },
+    {
+      "addr": "buffy.relay.crypto2099.io",
+      "port": 3001,
+      "valency": 1,
+      "continent": "Oceania",
+      "state": "AU"
+    },
+    {
+      "addr": "135.181.28.81",
+      "port": 6001,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "FI"
+    },
+    {
+      "addr": "82.71.27.2",
+      "port": 3001,
+      "valency": 1,
+      "continent": "Europe",
+      "state": "GB"
+    }
+  ]
+}

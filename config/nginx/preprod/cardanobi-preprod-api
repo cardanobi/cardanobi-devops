@@ -23,48 +23,58 @@ limit_req_zone $enterprise_plan_grp zone=user_plan_enterprise:10m rate=10r/s;
 
 # calculating keys
 map $http_client_api_key $free_plan_grp {
-	client1        '';
-    client2        '';
-    SWZibUPx6EtqSq        '';
-    client_auto_2        '';
-    # include any other API KEY for customers with non free rates plan here e.g.:
-	# client3	'';
-    default            $http_client_api_key;
+	include /home/cardano/cardanobi-srv/config/nginx/cardanobi-plan-free.map;
 }
 map $http_client_api_key $spo_plan_grp {
-    SWZibUPx6EtqSq    1;
-    # here you can add another API KEY for customers with a spo rates plan here, e.g.
-    # client3  2;
-    # the default value will be an empty string
+	include /home/cardano/cardanobi-srv/config/nginx/cardanobi-plan-spo.map;
 }
 map $http_client_api_key $dapp_plan_grp {
-	# client1        1;
-    # here you can add another API KEY for customers with a dapp rates plan here, e.g.
-    # value '1' does not interfere with the '1' from the previous map block in any way
-    # client_api_key4	1;
-    # client_api_key5   2;
+	include /home/cardano/cardanobi-srv/config/nginx/cardanobi-plan-dapp.map;
 }
 map $http_client_api_key $enterprise_plan_grp {
-	client_auto_2    1;
-    # here you can add another API KEY for customers with a enterprise rates plan here, e.g.
-    # value '1' does not interfere with the '1' from the previous map block in any way
-    # client_api_key4	1;
-    # client_api_key5   2;
+	include /home/cardano/cardanobi-srv/config/nginx/cardanobi-plan-enterprise.map;
 }
+
+# managing a map of client-api-key which have reached their quota.
+map $http_client_api_key $is_quota_limited {
+	include /home/cardano/cardanobi-srv/config/nginx/cardanobi-quota-limited.map;
+}
+
+error_page 403 /403.html;
+error_page 402 /402.html;
 
 limit_req_status 429;
 
 server {
     server_name preprod.cardanobi.io; # managed by Certbot
+
+	location = /403.html {
+		root    /usr/share/nginx/html;
+		allow   all;
+	}
+
+	location = /402.html {
+		root    /usr/share/nginx/html;
+		allow   all;
+	}
 	
 	location / {
+		# reject is Client-Api-Key is missing
+	    if ($http_client_api_key = "") {
+    	    return 403;
+    	}
+		# reject if Client-Api-Key is marked as being quota limited.
+		if ($is_quota_limited) {
+    		return 402; 
+		}
+
 		# rate limiting
 
 		# # use case 1:
 		# limit_req zone=free_req_zone;
 
 		# use case 2:
-		limit_req zone=user_plan_free burst=1 nodelay;
+		limit_req zone=user_plan_free nodelay;
 		limit_req zone=user_plan_spo burst=2 nodelay;
 		limit_req zone=user_plan_dapp burst=5 nodelay;
 		limit_req zone=user_plan_enterprise burst=10 nodelay;

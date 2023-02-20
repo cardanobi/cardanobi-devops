@@ -1,12 +1,7 @@
 'use strict';
 
-// const { default: CardanoBI } = import('../../../cardanobi-js/CardanoBI.js');
-import { CardanoBI } from '../../../cardanobi-js/CardanoBI.js';
-const CBI = await new CardanoBI({ apiKey: "client_auto_2", apiSecret: "secret", network: "preprod" });
-
-// const glob = require('glob');
-// import pkg from './node_modules/glob/glob.js';
-// const { glob } = pkg;
+import { CardanoBI } from '../../cardanobi-js/CardanoBI.js';
+const CBI = await new CardanoBI({ apiKey: "XXXXX", apiSecret: "XXXXXX" });
 
 import glob from 'glob';
 import fs from 'fs';
@@ -93,7 +88,7 @@ function loadCacheResponse(cbi, out_dir_cache, path, domain, entity, params, isO
             .catch(err => {
                 // reject(handleError(err));
                 //handleError(err);
-                console.log("asyncAwaitCaller error, path:",path,", domain:",domain,", funcName:",funcName," ,options:",options);
+                console.log("asyncAwaitCaller error, path:",path,", domain:",domain,", funcName:",funcName," ,options:",options," ,err:",err);
             });
     });
 }
@@ -104,17 +99,41 @@ function loadResponseFromCache(out_dir_cache, path) {
     return JSON.parse(rawdata);
 }
 
+// preprod
+// var apiParamsMap = {
+//     "Epoch number": 30,
+//     "Pool unique identifier": 17,
+//     "Pool metadata hash": "ac5fbc53a3d1493b5ba0ea1772fd5d4fda3cd72ba89503ff2261a39052fcd2f5",
+//     "Bech32 pool hash": "pool132jxjzyw4awr3s75ltcdx5tv5ecv6m042306l630wqjckhfm32r",
+//     "The pool VRF key in HEX format.": "ff9d774cc7e3e85ec1827bfd68c475bc611a9e288e7c9e1fb159fce52d2703fd",
+//     "A payment address or a stake address": "stake_test1uqh4cqczjpcjgnd3vhntldk9utmc3754tyrxy9seghptzwc6zayzz",
+//     "Stake address": "stake_test1uqh4cqczjpcjgnd3vhntldk9utmc3754tyrxy9seghptzwc6zayzz",
+//     "Pool ticker": "ADACT",
+//     "The pool update unique identifier": 1,
+//     "The Bech32 encoding of a given pool hash": "pool132jxjzyw4awr3s75ltcdx5tv5ecv6m042306l630wqjckhfm32r"
+// };
+
+// mainnet
 var apiParamsMap = {
-    "Epoch number": 30,
-    "Pool unique identifier": 17,
-    "Pool metadata hash": "ac5fbc53a3d1493b5ba0ea1772fd5d4fda3cd72ba89503ff2261a39052fcd2f5",
-    "Bech32 pool hash": "pool132jxjzyw4awr3s75ltcdx5tv5ecv6m042306l630wqjckhfm32r",
-    "The pool VRF key in HEX format.": "ff9d774cc7e3e85ec1827bfd68c475bc611a9e288e7c9e1fb159fce52d2703fd",
-    "A payment address or a stake address": "stake_test1uqh4cqczjpcjgnd3vhntldk9utmc3754tyrxy9seghptzwc6zayzz",
-    "Stake address": "stake_test1uqh4cqczjpcjgnd3vhntldk9utmc3754tyrxy9seghptzwc6zayzz",
+    "Epoch number": 394,
+    "Pool unique identifier": 4268,
+    "Pool metadata hash": "42771b05b30f180890980613b3147f6bb797fe1f8a83e92d39a3135ec9559ea8",
+    "Bech32 pool hash": "pool1y24nj4qdkg35nvvnfawukauggsxrxuy74876cplmxsee29w5axc",
+    "The pool VRF key in HEX format.": "9be345bcbcb0cf0559b1135467fd2e4c78c741898cdf8bcb737b2dc5122632df",
+    "A payment address or a stake address": "stake1u8a9qstrmj4rvc3k5z8fems7f0j2vztz8det2klgakhfc8ce79fma",
+    "Stake address": "stake1u8a9qstrmj4rvc3k5z8fems7f0j2vztz8det2klgakhfc8ce79fma",
     "Pool ticker": "ADACT",
     "The pool update unique identifier": 1,
-    "The Bech32 encoding of a given pool hash": "pool132jxjzyw4awr3s75ltcdx5tv5ecv6m042306l630wqjckhfm32r"
+    "The Bech32 encoding of a given pool hash": "pool1y24nj4qdkg35nvvnfawukauggsxrxuy74876cplmxsee29w5axc",
+    "Block Number": 8415364,
+    "Block number": 8415364,
+    "Block hash": "89ff1090614105a919c9ccc8bb3914aaef1ddd28214a4d55ff65436d2c9fc0b2",
+    "Slot number": 85165743,
+    "Block number to search from - defaults to the latest known block": 8415364,
+    "Number of blocks to return - defaults to 20 - max 100": 20,
+    "Number of blocks to return - defaults to 5 - max 20": 5,
+    "The Bech32 or HEX encoding of the pool hash.": "pool1y24nj4qdkg35nvvnfawukauggsxrxuy74876cplmxsee29w5axc",
+    "The Bech32 or HEX encoding of the pool hash": "pool1y24nj4qdkg35nvvnfawukauggsxrxuy74876cplmxsee29w5axc"
 };
 
 function generateNodejsCode(path, domain, entity, params, isOData) {
@@ -170,6 +189,7 @@ if (!args['file'] || !args['out-dir']) {
     console.log("\t\t\t with-groups (optional)");
     console.log("\t\t\t all-entities (optional)");
     console.log("\t\t\t entities={, separated list of entities} (optional)");
+    console.log("\t\t\t groups={, separated list of groups} (optional)");
     console.log("\t\t\t excluded-paths={, separated list of paths} (optional)");
     console.log("\t\t\t included-paths={, separated list of paths} (optional)");
     console.log("\t\t\t debug (optional)");
@@ -182,6 +202,7 @@ var withDomains = args['with-domains'];
 var withGroups = args['with-groups'];
 var allEntities = args['all-entities'];
 var entities = args['entities'];
+var groups = args['groups'];
 var excludedPaths = args['excluded-paths'];
 var includedPaths = args['included-paths'];
 var debug = args['debug'];
@@ -190,6 +211,11 @@ if (entities)
     entities = entities.split(",");
 else
     entities = [];
+
+if (groups)
+    groups = groups.split(",");
+else
+    groups = [];
 
 if (excludedPaths)
     excludedPaths = excludedPaths.split(",");
@@ -208,6 +234,7 @@ console.log("withDomains: ", withDomains);
 console.log("withGroups: ", withGroups);
 console.log("allEntities: ", allEntities);
 console.log("entities: ", entities);
+console.log("groups: ", groups);
 console.log("excludedPaths: ", excludedPaths);
 console.log("includedPaths: ", includedPaths);
 
@@ -281,7 +308,7 @@ try {
             isOData = true;
         }
 
-        if ((allEntities || entities.includes(method_entity) || includedPaths.includes(method_path)) && !excludedPaths.includes(method_path)) {
+        if ((allEntities || entities.includes(method_entity) || groups.includes(method_group) || includedPaths.includes(method_path)) && !excludedPaths.includes(method_path)) {
             let method_params = p[1][method_type]['parameters'] === undefined ? [] : Object.entries(p[1][method_type]['parameters']);
 
             let out_file = outDir + "/" + method_entity + "_main.md";
@@ -315,6 +342,7 @@ try {
                 apiCacheCallsArray[batchCounter] = [];
             }
 
+            console.log("In scope: ", method_path);
             apiCacheCallsArray[batchCounter].push(() => loadCacheResponse(CBI, out_dir_cache, method_path, method_domain, method_entity.toLowerCase(), method_params, isOData));    
             counter++;
             
@@ -362,7 +390,7 @@ try {
             isOData = true;
         }
 
-        if ((allEntities || entities.includes(method_entity) || includedPaths.includes(method_path)) && !excludedPaths.includes(method_path)) {
+        if ((allEntities || entities.includes(method_entity) || groups.includes(method_group) || includedPaths.includes(method_path)) && !excludedPaths.includes(method_path)) {
             let method_summary = p[1][method_type]['summary'] === undefined ? "" : p[1][method_type]['summary'];
             let method_summary_clean = method_summary;
             let method_description = p[1][method_type]['description'] === undefined ? "" : p[1][method_type]['description'];

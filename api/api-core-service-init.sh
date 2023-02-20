@@ -2,14 +2,32 @@
 # global variables
 NOW=`date +"%Y%m%d_%H%M%S"`
 SCRIPT_DIR="$(realpath "$(dirname "$0")")"
-CARDANOBI_DIR="$(realpath "$(dirname "$SCRIPT_DIR")")"
-CONF_PATH="$CARDANOBI_DIR/config"
-SCRIPTS_PATH="$CARDANOBI_DIR/scripts"
+BASE_DIR="$(realpath "$(dirname "$SCRIPT_DIR")")"
+CONF_PATH="$BASE_DIR/config"
 
+echo "SCRIPT_DIR: $SCRIPT_DIR"
+echo "BASE_DIR: $BASE_DIR"
+echo "CONF_PATH: $CONF_PATH"
+echo
+
+# importing utility functions
+source $BASE_DIR/utils.sh
+
+echo '---------------- Deploying CardanoBI API Instance Service  ----------------'
+echo
 DEPLOY_PATH="$HOME/cardanobi-srv/api/ApiCore"
+DEPLOY_PATH=$(prompt_input_default DEPLOY_PATH $DEPLOY_PATH)
 
 echo
-echo '---------------- Getting cardanobi-identity-server systemd service ready ----------------'
+echo "Details of your CardanoBI API Service deployment:"
+echo "DEPLOY_PATH: $DEPLOY_PATH"
+if ! promptyn "Please confirm you want to proceed? (y/n)"; then
+    echo "Ok bye!"
+    exit 1
+fi
+
+echo
+echo '---------------- Getting cardanobi-api-core systemd service ready ----------------'
 
 cat > /tmp/run.cardanobi-api-core.service << EOF
 [Unit]

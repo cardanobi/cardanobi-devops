@@ -2,18 +2,33 @@
 # global variables
 NOW=`date +"%Y%m%d_%H%M%S"`
 SCRIPT_DIR="$(realpath "$(dirname "$0")")"
-CARDANOBI_DIR="$HOME/cardanobi"
-CONF_PATH="$CARDANOBI_DIR/config"
-SCRIPTS_PATH="$CARDANOBI_DIR/scripts"
-
-BUILD_PATH="$CARDANOBI_DIR/api/src/IdentityServer"
-DEPLOY_PATH="$HOME/cardanobi-srv/api/IdentityServer"
+BASE_DIR="$(realpath "$(dirname "$SCRIPT_DIR")")"
+CONF_PATH="$BASE_DIR/config"
 
 echo "SCRIPT_DIR: $SCRIPT_DIR"
-echo "CARDANOBI_DIR: $CARDANOBI_DIR"
-echo "SCRIPTS_PATH: $SCRIPTS_PATH"
+echo "BASE_DIR: $BASE_DIR"
+echo "CONF_PATH: $CONF_PATH"
+echo
+
+# importing utility functions
+source $BASE_DIR/utils.sh
+
+echo '---------------- Deploying CardanoBI Identity Instance  ----------------'
+echo
+BUILD_PATH="$HOME/cardanobi-backend-identity/src/IdentityServer"
+BUILD_PATH=$(prompt_input_default BUILD_PATH $BUILD_PATH)
+
+DEPLOY_PATH="$HOME/cardanobi-srv/api/IdentityServer"
+DEPLOY_PATH=$(prompt_input_default DEPLOY_PATH $DEPLOY_PATH)
+
+echo
+echo "Details of your CardanoBI Identity Instance deployment:"
+echo "BUILD_PATH: $BUILD_PATH"
 echo "DEPLOY_PATH: $DEPLOY_PATH"
-echo "CURRENT_DIR: $PWD"
+if ! promptyn "Please confirm you want to proceed? (y/n)"; then
+    echo "Ok bye!"
+    exit 1
+fi
 
 mkdir -p $DEPLOY_PATH
 

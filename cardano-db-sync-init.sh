@@ -2,12 +2,16 @@
 # global variables
 NOW=`date +"%Y%m%d_%H%M%S"`
 SCRIPT_DIR="$(realpath "$(dirname "$0")")"
-CARDANOBI_DIR="$(realpath "$(dirname "$SCRIPT_DIR")")"
-CONF_PATH="$CARDANOBI_DIR/config"
-SCRIPTS_PATH="$CARDANOBI_DIR/scripts"
+BASE_DIR="$(realpath "$(dirname "$SCRIPT_DIR")")"
+CONF_PATH="$SCRIPT_DIR/config"
+
+echo "SCRIPT_DIR: $SCRIPT_DIR"
+echo "BASE_DIR: $BASE_DIR"
+echo "CONF_PATH: $CONF_PATH"
+echo
 
 # importing utility functions
-source $SCRIPTS_PATH/utils.sh
+source $SCRIPT_DIR/utils.sh
 
 echo "CARDANO-DB-SYNC-INIT STARTING..."
 
@@ -35,15 +39,41 @@ echo '---------------- Cabal dependency ----------------'
 ISCABAL=$(which cabal | wc -l)
 
 if [[ $ISCABAL -eq 0 ]];then
+    # echo
+    # echo '---------------- Installing Cabal ----------------'
+    # # Download most recent version (check this is still the right version here: https://www.haskell.org/cabal/download.html)
+    # mkdir -p ~/download/cabal
+    # cd ~/download/cabal
+    # wget https://downloads.haskell.org/~cabal/cabal-install-3.4.0.0/cabal-install-3.4.0.0-x86_64-ubuntu-16.04.tar.xz
+    # tar -xf cabal-install-3.4.0.0-x86_64-ubuntu-16.04.tar.xz
+    # mkdir -p ~/.local/bin
+    # cp cabal ~/.local/bin/
+
     echo
-    echo '---------------- Installing Cabal ----------------'
-    # Download most recent version (check this is still the right version here: https://www.haskell.org/cabal/download.html)
-    mkdir -p ~/download/cabal
-    cd ~/download/cabal
-    wget https://downloads.haskell.org/~cabal/cabal-install-3.4.0.0/cabal-install-3.4.0.0-x86_64-ubuntu-16.04.tar.xz
-    tar -xf cabal-install-3.4.0.0-x86_64-ubuntu-16.04.tar.xz
-    mkdir -p ~/.local/bin
-    cp cabal ~/.local/bin/
+    echo '---------------- Cabal & GHC dependency ----------------'
+    curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
+
+    # This is an interactive session make sure to start a new shell before resuming the rest of the install process below.
+
+    echo "Installing ghc 8.10.7"
+    ghcup install ghc 8.10.7
+    echo
+
+    echo "Installing cabal 3.6.2.0"
+    ghcup install cabal 3.6.2.0
+
+    ghcup set ghc 8.10.7
+    ghcup set cabal 3.6.2.0
+
+    echo "Make sure ghc and cabal points to .ghcup locations."
+    echo "If not you may have to add the below to your .bashrc:"
+    echo "   export PATH=/home/cardano/.ghcup/bin:\$PATH"
+    which cabal
+    which ghc
+    echo 
+
+    cabal --version
+    ghc --version
 
     # Add $HOME/.local/bin to $PATH and ~/.bashrc if required
     echo "\$PATH Before: $PATH"
@@ -115,9 +145,12 @@ fi
 
 echo
 echo "Building cardano-db-sync, tag $LATESTTAG:"
+sudo apt install pkg-config libpq-dev
+cabal update
+
 cabal build cardano-db-sync 2>&1 | tee /tmp/build.cardano-db-sync.log
 
-cp -p "$($SCRIPTS_PATH/bin_path.sh cardano-db-sync)" ~/.local/bin/
+cp -p "$($SCRIPTS_PATH/bin_path.sh cardano-db-sync $INSTALL_PATH/cardano-db-sync)" ~/.local/bin/
 cardano-db-sync --version
 
 #Moving schema migration files to our work directory

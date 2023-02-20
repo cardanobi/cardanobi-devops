@@ -1,6 +1,6 @@
 # Explorer DB Node configuration
 
-NetworkName: preprod
+NetworkName: mainnet
 
 EnableLogMetrics: False
 EnableLogging: True
@@ -12,7 +12,7 @@ EnableLogging: True
 # config, it will likely lead to db-sync throwing up weird error messages from
 # the consensus layer.
 # The path to the node config file is relative to this config file.
-NodeConfigFile: /home/cardano/node.relay/config/config.json
+NodeConfigFile: /home/cardano/data/node.relay/config/config.json
 
 # ------------------------------------------------------------------------------
 # Logging configuration follows.
@@ -21,7 +21,6 @@ NodeConfigFile: /home/cardano/node.relay/config/config.json
 minSeverity: Info
 
 # global file rotation settings:
-rotation:
 rotation:
   rpLogLimitBytes: 5000000
   rpKeepFilesNum:  10

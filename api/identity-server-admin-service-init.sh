@@ -2,11 +2,31 @@
 # global variables
 NOW=`date +"%Y%m%d_%H%M%S"`
 SCRIPT_DIR="$(realpath "$(dirname "$0")")"
-CARDANOBI_DIR="$(realpath "$(dirname "$SCRIPT_DIR")")"
-CONF_PATH="$CARDANOBI_DIR/config"
-SCRIPTS_PATH="$CARDANOBI_DIR/scripts"
+BASE_DIR="$(realpath "$(dirname "$SCRIPT_DIR")")"
+CONF_PATH="$BASE_DIR/config"
 
-DEPLOY_PATH="$HOME/cardanobi-srv/api/IdentityServer.Admin.Api"
+echo "SCRIPT_DIR: $SCRIPT_DIR"
+echo "BASE_DIR: $BASE_DIR"
+echo "CONF_PATH: $CONF_PATH"
+echo
+
+# importing utility functions
+source $BASE_DIR/utils.sh
+
+echo '---------------- Deploying CardanoBI Identity Admin Instance Service  ----------------'
+echo
+ROOT_DEPLOY_PATH="$HOME/cardanobi-srv/api"
+ROOT_DEPLOY_PATH=$(prompt_input_default ROOT_DEPLOY_PATH $ROOT_DEPLOY_PATH)
+
+echo
+echo "Details of your CardanoBI Identity Service deployment:"
+echo "ROOT_DEPLOY_PATH: $ROOT_DEPLOY_PATH"
+if ! promptyn "Please confirm you want to proceed? (y/n)"; then
+    echo "Ok bye!"
+    exit 1
+fi
+
+DEPLOY_PATH="$ROOT_DEPLOY_PATH/IdentityServer.Admin.Api"
 echo
 echo '---------------- Getting cardanobi-identity-server-admin-api systemd service ready ----------------'
 
@@ -44,7 +64,7 @@ echo '---------------- cardanobi-identity-server-admin-api.service systemd servi
 sudo systemctl status run.cardanobi-identity-server-admin-api.service
 
 
-DEPLOY_PATH="$HOME/cardanobi-srv/api/IdentityServer.Admin.STS"
+DEPLOY_PATH="$ROOT_DEPLOY_PATH/IdentityServer.Admin.STS"
 echo
 echo '---------------- Getting cardanobi-identity-server-admin-sts systemd service ready ----------------'
 
@@ -82,7 +102,7 @@ echo '---------------- cardanobi-identity-server-admin-sts.service systemd servi
 sudo systemctl status run.cardanobi-identity-server-admin-sts.service
 
 
-DEPLOY_PATH="$HOME/cardanobi-srv/api/IdentityServer.Admin"
+DEPLOY_PATH="$ROOT_DEPLOY_PATH/IdentityServer.Admin"
 echo
 echo '---------------- Getting cardanobi-identity-server-admin systemd service ready ----------------'
 

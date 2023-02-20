@@ -21,19 +21,33 @@ echo
 sudo apt update
 sudo apt install nginx
 
+# TODO copy relevant cardanobi-ENV-web file from /config/nginx/ENV to /etc/nginx/sites-available
+# TODO sudo rm /etc/nginx/sites-enabled/default
+# TODO sudo cd /etc/nginx/sites-enabled/; sudo ln -s /etc/nginx/sites-enabled/cardanobi-ENV-web cardanobi-ENV-web 
+
 echo
 if ! promptyn "Have you modified nginx config to route https traffic to the right port and are you ready to proceed? (y/n)"; then
     echo "Ok bye!"
     exit 1
 fi
 
-
-# Todo here we should copy /config/cardanobi-ENV-web-init into /etc/nginx/sites-available and create matching entry into /etc/nginx/sites-enabled
-
 sudo nginx -t
 sudo service nginx reload
 
 sudo apt install certbot python3-certbot-nginx
+
+echo '---------------- Opening required ports  ----------------'
+echo
+sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
+sudo firewall-cmd --reload
+
+
+echo
+echo "Ports have been opened."
+if ! promptyn "Have you add Ingress Rules in your OCI VCN for the same? (y/n)"; then
+    echo "Ok bye!"
+    exit 1
+fi
 
 echo '---------------- Installing certbot  ----------------'
 echo

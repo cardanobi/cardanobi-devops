@@ -1,0 +1,15 @@
+# Web server configuration
+# Listens to 443 and routes to 5002 (Web server target port)
+# Enforces HTTPS throughout via Certbot
+server {
+    server_name mainnet.cardanobi.io; # managed by Certbot
+
+	location / {
+		# First attempt to serve request as file, then
+		# as directory, then fall back to displaying a 404.
+		#try_files $uri $uri/ =404;
+		proxy_set_header Host $host;
+		proxy_pass https://127.0.0.1:5001;
+		proxy_redirect off;
+	}
+}

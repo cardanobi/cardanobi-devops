@@ -1,0 +1,118 @@
+# API server configuration
+# Listens to 4000 and routes to 4001 (API GW or API LB tbd)
+# Enforces HTTPS throughout via Certbot
+# log_format  custom     '$remote_addr - $remote_user [$time_local] "$request" '
+# 					'$status $body_bytes_sent "$http_referer" '
+# 					'"$http_user_agent" "$http_x_forwarded_for" "$http_x_xsrf_token" "$http_api_key"';
+
+# log_format custom_log '[$time_local] $remote_addr - $remote_user - $server_name - from toto: $http_x_forwarded_for to: $upstream_addr: $request with $http_client_api_key <$request_body_file> --> upstream_response_time $upstream_response_time msec $msec request_time $request_time --- $sent_http_clientapikey ';
+log_format custom_log '[$time_local] from $remote_addr to $upstream_addr: $request ApiKey: $http_client_api_key ,upstream_response_time $upstream_response_time msec $msec request_time $request_time response_size $bytes_sent';
+
+# rate limiting definitions
+
+# # use case 1: one zone for each key (either per IP or per API KEY)
+# # limit_req_zone $binary_remote_addr zone=free_req_zone:10m rate=5r/s;
+# limit_req_zone $http_client_api_key zone=free_req_zone:10m rate=1r/s;
+
+# use case 2: one zone per group of keys (e.g. per API KEY group/customer plan)
+# zones definitions
+limit_req_zone $free_plan_grp zone=user_plan_free:10m rate=1r/s;
+limit_req_zone $spo_plan_grp zone=user_plan_spo:10m rate=2r/s;
+limit_req_zone $dapp_plan_grp zone=user_plan_dapp:10m rate=5r/s;
+limit_req_zone $enterprise_plan_grp zone=user_plan_enterprise:10m rate=10r/s;
+
+# calculating keys
+map $http_client_api_key $free_plan_grp {
+	client1        '';
+    client2        '';
+    SWZibUPx6EtqSq        '';
+    client_auto_2        '';
+    # include any other API KEY for customers with non free rates plan here e.g.:
+	# client3	'';
+    default            $http_client_api_key;
+}
+map $http_client_api_key $spo_plan_grp {
+    SWZibUPx6EtqSq    1;
+    # here you can add another API KEY for customers with a spo rates plan here, e.g.
+    # client3  2;
+    # the default value will be an empty string
+}
+map $http_client_api_key $dapp_plan_grp {
+	# client1        1;
+    # here you can add another API KEY for customers with a dapp rates plan here, e.g.
+    # value '1' does not interfere with the '1' from the previous map block in any way
+    # client_api_key4	1;
+    # client_api_key5   2;
+}
+map $http_client_api_key $enterprise_plan_grp {
+	client_auto_2    1;
+    # here you can add another API KEY for customers with a enterprise rates plan here, e.g.
+    # value '1' does not interfere with the '1' from the previous map block in any way
+    # client_api_key4	1;
+    # client_api_key5   2;
+}
+
+limit_req_status 429;
+
+server {
+    server_name mainnet.cardanobi.io; # managed by Certbot
+	
+	location / {
+		# rate limiting
+
+		# # use case 1:
+		# limit_req zone=free_req_zone;
+
+		# use case 2:
+		limit_req zone=user_plan_free burst=1 nodelay;
+		limit_req zone=user_plan_spo burst=2 nodelay;
+		limit_req zone=user_plan_dapp burst=5 nodelay;
+		limit_req zone=user_plan_enterprise burst=10 nodelay;
+
+		# First attempt to serve request as file, then
+		# as directory, then fall back to displaying a 404.
+		# try_files $uri $uri/ =404;
+
+		proxy_set_header Host $host;
+		# proxy_set_header Host $host:$server_port;
+		proxy_pass https://127.0.0.1:4001;
+		proxy_redirect off;
+
+		# proxy_pass       https://127.0.0.1:4001;
+		# proxy_set_header   X-Real-IP $remote_addr;
+		# proxy_set_header   X-NginX-Proxy true;
+		# proxy_http_version 1.1;
+		# proxy_set_header   Upgrade $http_upgrade;
+		# proxy_set_header   Connection keep-alive;
+		# proxy_set_header   Host $host;
+		# proxy_cache_bypass $http_upgrade;
+	}
+
+	# location /api/core/epochs/1/params {
+	# 	# rate limiting
+	# 	limit_req zone=free_req_zone;
+	# 	# limit_req zone=spo_req_zone;
+
+	# 	# First attempt to serve request as file, then
+	# 	# as directory, then fall back to displaying a 404.
+	# 	# try_files $uri $uri/ =404;
+
+	# 	proxy_set_header Host $host;
+	# 	# proxy_set_header Host $host:$server_port;
+	# 	proxy_pass https://127.0.0.1:4001;
+	# 	proxy_redirect off;
+    # }
+
+	access_log /var/log/nginx/cardanobi-mainnet-api-access.log	custom_log;
+	error_log /var/log/nginx/cardanobi-mainnet-api-error.log warn;
+
+    listen [::]:4000 ssl ipv6only=on; # managed by Certbot
+    listen 4000 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/mainnet.cardanobi.io/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/mainnet.cardanobi.io/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+}
+
+
+

@@ -2,12 +2,16 @@
 # global variables
 NOW=`date +"%Y%m%d_%H%M%S"`
 SCRIPT_DIR="$(realpath "$(dirname "$0")")"
-CARDANOBI_DIR="$(realpath "$(dirname "$SCRIPT_DIR")")"
-CONF_PATH="$CARDANOBI_DIR/config"
-SCRIPTS_PATH="$CARDANOBI_DIR/scripts"
+BASE_DIR="$(realpath "$(dirname "$SCRIPT_DIR")")"
+CONF_PATH="$SCRIPT_DIR/config"
+
+echo "SCRIPT_DIR: $SCRIPT_DIR"
+echo "BASE_DIR: $BASE_DIR"
+echo "CONF_PATH: $CONF_PATH"
+echo
 
 # importing utility functions
-source $SCRIPTS_PATH/utils.sh
+source $SCRIPT_DIR/utils.sh
 
 echo "DOTNET-INIT STARTING..."
 echo

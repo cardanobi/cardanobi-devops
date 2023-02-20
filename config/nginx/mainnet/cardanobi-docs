@@ -1,0 +1,27 @@
+# Identity server configuration
+# Listens to 443 to serve static files
+# Enforces HTTPS throughout via Certbot
+
+server {
+    server_name docs.cardanobi.io; # managed by Certbot
+
+	root /home/cardano/cardanobi-docs/build;
+	index index.html;
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/docs.cardanobi.io/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/docs.cardanobi.io/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+
+server {
+    if ($host = docs.cardanobi.io) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+    server_name docs.cardanobi.io;
+    listen 80;
+    return 404; # managed by Certbot
+}

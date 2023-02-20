@@ -52,8 +52,8 @@ sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-idserver-adminui 
 
 sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/*.html /usr/share/nginx/html
 
-mkdir -p $CARDANOBI_SRV_PATH/nginx/config
-sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/*.map $CARDANOBI_SRV_PATH/nginx/config
+mkdir -p $CARDANOBI_SRV_PATH/config/nginx
+sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/*.map $CARDANOBI_SRV_PATH/config/nginx
 
 sudo nginx -t
 sudo service nginx reload

@@ -21,6 +21,8 @@ echo '---------------- Deploying CardanoBI nginx config  ----------------'
 echo
 CARDANOBI_ENV="preprod"
 CARDANOBI_ENV=$(prompt_input_default CARDANOBI_ENV $CARDANOBI_ENV)
+CARDANOBI_SRV_PATH=$BASE_DIR
+CARDANOBI_SRV_PATH=$(prompt_input_default CARDANOBI_SRV_PATH $CARDANOBI_SRV_PATH)
 
 echo
 echo "Details of your CardanoBI nginx config deployment:"
@@ -47,6 +49,11 @@ sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-idserver-admin ca
 sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-idserver-adminapi cardanobi-$CARDANOBI_ENV-idserver-adminap
 sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-idserver-adminui cardanobi-$CARDANOBI_ENV-idserver-adminui
 # sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-web cardanobi-$CARDANOBI_ENV-web
+
+sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/*.html /usr/share/nginx/html
+
+mkdir -p $CARDANOBI_SRV_PATH/nginx/config
+sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/*.map $CARDANOBI_SRV_PATH/nginx/config
 
 sudo nginx -t
 sudo service nginx reload

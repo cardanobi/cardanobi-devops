@@ -107,10 +107,36 @@ sudo systemctl daemon-reload
 sudo systemctl enable run.nginx-log-parser.service
 
 
+# TODO deploy the stored procedure to create nginx usage views
+
+# modifying cron to schedule update of said views
+if [[ $(crontab -l | egrep -v "^(#|$)" | grep -q 'nginx_usage_update'; echo $?) == 1 ]]; then
+    echo "No cron entry found for nginx_usage_update. Adding it."
+
+    # Schedule nginx_usage_update(daily) to run every minute
+    cat > /tmp/crontab-fragment.txt << EOF
+* * * * * psql -d cardanobi_admin -U cardano -W cardano -w -c "call public.nginx_usage_update('daily');"
+EOF
+    crontab -l | cat - /tmp/crontab-fragment.txt >/tmp/crontab.txt && crontab /tmp/crontab.txt
+    rm /tmp/crontab-fragment.txt
+    rm /tmp/crontab.txt
+
+        # Schedule nginx_usage_update(hist) to run once a day at 00:01
+    cat > /tmp/crontab-fragment.txt << EOF
+1 0 * * * psql -d cardanobi_admin -U cardano -W cardano -w -c "call public.nginx_usage_update('hist');"
+EOF
+    crontab -l | cat - /tmp/crontab-fragment.txt >/tmp/crontab.txt && crontab /tmp/crontab.txt
+    rm /tmp/crontab-fragment.txt
+    rm /tmp/crontab.txt
+else
+    echo "Cron entry found for nginx_usage_update. Nothing to do"
+fi
+
+
 echo 
 echo '---------------- Getting our firewall ready ----------------'
 
-# Todo automate this of OCI or Azure depending on deployment platform
+# Todo automate this for OCI or Azure depending on deployment platform
 
 sudo firewall-cmd --zone=public --add-port=4000/tcp --permanent
 sudo firewall-cmd --zone=public --add-port=5000/tcp --permanent

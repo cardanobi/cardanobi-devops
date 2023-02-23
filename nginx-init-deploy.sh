@@ -58,6 +58,46 @@ sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/*.map $CARDANOBI_SRV_PATH/config/nginx
 sudo nginx -t
 sudo service nginx reload
 
+echo
+echo '---------------- Deploying CardanoBI nginx log parser  ----------------'
+echo
+
+mkdir -p $CARDANOBI_SRV_PATH/nginx
+cp $SCRIPT_DIR/.env $SCRIPT_DIR/logparser.js $SCRIPT_DIR/nginx-log-parser.js $SCRIPT_DIR/package.json $CARDANOBI_SRV_PATH/nginx
+cd $CARDANOBI_SRV_PATH/nginx
+npm i
+
+NODEJS_PATH=`which node`
+
+cat > /tmp/run.nginx-log-parser.service << EOF
+[Unit]
+Description=CardanoBI Nginx Log Parser
+Wants=network-online.target
+After=multi-user.target
+
+[Service]
+User=$USER
+Type=simple
+WorkingDirectory=$CARDANOBI_SRV_PATH/nginx
+Restart=always
+RestartSec=5
+LimitNOFILE=131072
+ExecStart=$NODEJS_PATH nginx-log-parser.js
+KillSignal=SIGINT
+RestartKillSignal=SIGINT
+TimeoutStopSec=2
+SuccessExitStatus=143
+SyslogIdentifier=run.nginx-log-parser.service
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo mv /tmp/run.nginx-log-parser.service /etc/systemd/system
+sudo systemctl daemon-reload
+sudo systemctl enable run.nginx-log-parser.service
+
+
 echo 
 echo '---------------- Getting our firewall ready ----------------'
 

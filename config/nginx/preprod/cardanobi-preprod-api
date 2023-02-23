@@ -6,7 +6,8 @@
 # 					'"$http_user_agent" "$http_x_forwarded_for" "$http_x_xsrf_token" "$http_api_key"';
 
 # log_format custom_log '[$time_local] $remote_addr - $remote_user - $server_name - from toto: $http_x_forwarded_for to: $upstream_addr: $request with $http_client_api_key <$request_body_file> --> upstream_response_time $upstream_response_time msec $msec request_time $request_time --- $sent_http_clientapikey ';
-log_format custom_log '[$time_local] from $remote_addr to $upstream_addr: $request ApiKey: $http_client_api_key ,upstream_response_time $upstream_response_time msec $msec request_time $request_time response_size $bytes_sent';
+# log_format custom_log '[$time_local] from $remote_addr to $upstream_addr: $request ApiKey: $http_client_api_key ,upstream_response_time $upstream_response_time msec $msec request_time $request_time response_size $bytes_sent';
+log_format custom_log '[$time_iso8601] from [$remote_addr] to [$upstream_addr] ,req: [$request] ,reqLength: [$request_length] ,ApiKey: [$http_client_api_key] ,upstream_response_time: [$upstream_response_time] ,request_time: [$request_time] ,response_size: [$bytes_sent]';
 
 # rate limiting definitions
 

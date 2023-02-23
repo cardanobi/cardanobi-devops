@@ -63,12 +63,21 @@ echo '---------------- Deploying CardanoBI nginx log parser  ----------------'
 echo
 
 mkdir -p $CARDANOBI_SRV_PATH/nginx
-cp $SCRIPT_DIR/.env $SCRIPT_DIR/logparser.js $SCRIPT_DIR/nginx-log-parser.js $SCRIPT_DIR/package.json $CARDANOBI_SRV_PATH/nginx
+cp  $SCRIPT_DIR/nginx/logparser.js $SCRIPT_DIR/nginx/nginx-log-parser.js $SCRIPT_DIR/nginx/package.json $CARDANOBI_SRV_PATH/nginx
 cd $CARDANOBI_SRV_PATH/nginx
+
+cat > $SCRIPT_DIR/nginx/.env << EOF
+CARDANOBI_ADMIN_USERNAME="cardano"
+CARDANOBI_ADMIN_PASSWORD="cardano"
+CARDANOBI_NGINX_LOG_FILE="/var/log/nginx/cardanobi-$CARDANOBI_ENV-api-access.log"
+EOF
+
+# adding current user to adm group to be able to watch nginx log files
+sudo adduser $USER adm
+
 npm i
 
-NODEJS_PATH=`which node`
-
+NODEJS_PATH=$(which node)
 cat > /tmp/run.nginx-log-parser.service << EOF
 [Unit]
 Description=CardanoBI Nginx Log Parser

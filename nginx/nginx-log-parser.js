@@ -29,7 +29,7 @@ var logFile = undefined;
 if (!args['logfile']) {
     if (!process.env.CARDANOBI_NGINX_LOG_FILE) {
         console.log("This script requires input parameters:\nUsages:")
-        console.log("\tnode runparser.js logfile={LOG FILE}");
+        console.log("\tnode nginx-log-parser.js logfile={LOG FILE}");
         console.log("\n\nOr define CARDANOBI_NGINX_LOG_FILE in .env")
         process.exit();
     } else {
@@ -81,6 +81,11 @@ const checkTableExists = async (tableName) => {
 
 const insertLog = async (line) => {
     try {
+        // checking for data type consistency
+        if (line.upstream_response_time == '-') {
+            line.upstream_response_time = '0';
+        }
+
         var query = `INSERT INTO "_nginx_logs_staging" ("source", "time", "src_ip", "dest_ip", "request", "request_length", "api_key", "upstream_response_time", "request_time", "response_size_bytes", "hash" ) 
         VALUES ('${line.source}', 
             '${line.time_iso8601}', 
@@ -94,6 +99,7 @@ const insertLog = async (line) => {
             ${line.bytes_sent},
             '${line.hash}')`;
         
+
         console.log(query);
 
         await client.query(query, (err, res) => {
@@ -174,30 +180,30 @@ parser.read(logFile, async function (row) {
     }
 });
 
-// initialize and run the log file stream
-parser.stream(logFile, function (row) {
-    var match = row.toString().match(parser.linePattern);
-    if (match) {
-        // console.log(row);
+// // initialize and run the log file stream
+// parser.stream(logFile, function (row) {
+//     var match = row.toString().match(parser.linePattern);
+//     if (match) {
+//         // console.log(row);
 
-        var regex = /\[([^\][]*)]/g;
-        var attributes=[], m;
-        while ( m = regex.exec(row) ) {
-            attributes.push(m[1]);
-        }
+//         var regex = /\[([^\][]*)]/g;
+//         var attributes=[], m;
+//         while ( m = regex.exec(row) ) {
+//             attributes.push(m[1]);
+//         }
 
-        var parsedRow = parser.rowAttributes.reduce((acc, item, i) => {
-            acc[item] = attributes[i];
-            return acc;
-        }, {}); 
-        parsedRow['source'] = parser.source;
-        parsedRow['hash'] = crypto.createHash('sha256','cardanobi').update(JSON.stringify(parsedRow)).digest('hex');
+//         var parsedRow = parser.rowAttributes.reduce((acc, item, i) => {
+//             acc[item] = attributes[i];
+//             return acc;
+//         }, {}); 
+//         parsedRow['source'] = parser.source;
+//         parsedRow['hash'] = crypto.createHash('sha256','cardanobi').update(JSON.stringify(parsedRow)).digest('hex');
 
-        // console.log("parsedRow: ", parsedRow);
+//         // console.log("parsedRow: ", parsedRow);
 
-        insertLog(parsedRow);
-    }
-});
+//         insertLog(parsedRow);
+//     }
+// });
 
 // await client.end().then(r => {
 //     // parser.close();    

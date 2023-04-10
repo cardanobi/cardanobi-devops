@@ -180,30 +180,30 @@ parser.read(logFile, async function (row) {
     }
 });
 
-// // initialize and run the log file stream
-// parser.stream(logFile, function (row) {
-//     var match = row.toString().match(parser.linePattern);
-//     if (match) {
-//         // console.log(row);
+// initialize and run the log file stream
+parser.stream(logFile, function (row) {
+    var match = row.toString().match(parser.linePattern);
+    if (match) {
+        // console.log(row);
 
-//         var regex = /\[([^\][]*)]/g;
-//         var attributes=[], m;
-//         while ( m = regex.exec(row) ) {
-//             attributes.push(m[1]);
-//         }
+        var regex = /\[([^\][]*)]/g;
+        var attributes=[], m;
+        while ( m = regex.exec(row) ) {
+            attributes.push(m[1]);
+        }
 
-//         var parsedRow = parser.rowAttributes.reduce((acc, item, i) => {
-//             acc[item] = attributes[i];
-//             return acc;
-//         }, {}); 
-//         parsedRow['source'] = parser.source;
-//         parsedRow['hash'] = crypto.createHash('sha256','cardanobi').update(JSON.stringify(parsedRow)).digest('hex');
+        var parsedRow = parser.rowAttributes.reduce((acc, item, i) => {
+            acc[item] = attributes[i];
+            return acc;
+        }, {}); 
+        parsedRow['source'] = parser.source;
+        parsedRow['hash'] = crypto.createHash('sha256','cardanobi').update(JSON.stringify(parsedRow)).digest('hex');
 
-//         // console.log("parsedRow: ", parsedRow);
+        // console.log("parsedRow: ", parsedRow);
 
-//         insertLog(parsedRow);
-//     }
-// });
+        insertLog(parsedRow);
+    }
+});
 
 // await client.end().then(r => {
 //     // parser.close();    

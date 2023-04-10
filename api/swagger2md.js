@@ -1,9 +1,7 @@
 'use strict';
 
 import { CardanoBI } from '../../cardanobi-js/CardanoBI.js';
-// const CBI = await new CardanoBI({ apiKey: "XXXXX", apiSecret: "XXXXXX" });
-// const CBI = await new CardanoBI({ apiKey: "client_auto_2", apiSecret: "secret", network: "preprod" });
-const CBI = await new CardanoBI({ apiKey: "hOhzauQkioPQtsiPwfHSt9xdwQxWZVa9BuMdoOHIg", apiSecret: "D71dCpk1J0meVDQn2T5MXbO8d9EdSHrQduuIWzZ8" });
+const CBI = await new CardanoBI({ apiKey: "XXXXX", apiSecret: "XXXXXX" });
 
 import glob from 'glob';
 import fs from 'fs';

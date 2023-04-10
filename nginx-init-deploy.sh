@@ -63,12 +63,21 @@ echo '---------------- Deploying CardanoBI nginx log parser  ----------------'
 echo
 
 mkdir -p $CARDANOBI_SRV_PATH/nginx
-cp $SCRIPT_DIR/.env $SCRIPT_DIR/logparser.js $SCRIPT_DIR/nginx-log-parser.js $SCRIPT_DIR/package.json $CARDANOBI_SRV_PATH/nginx
+cp  $SCRIPT_DIR/nginx/logparser.js $SCRIPT_DIR/nginx/nginx-log-parser.js $SCRIPT_DIR/nginx/package.json $CARDANOBI_SRV_PATH/nginx
 cd $CARDANOBI_SRV_PATH/nginx
+
+cat > $SCRIPT_DIR/nginx/.env << EOF
+CARDANOBI_ADMIN_USERNAME="cardano"
+CARDANOBI_ADMIN_PASSWORD="cardano"
+CARDANOBI_NGINX_LOG_FILE="/var/log/nginx/cardanobi-$CARDANOBI_ENV-api-access.log"
+EOF
+
+# adding current user to adm group to be able to watch nginx log files
+sudo adduser $USER adm
+
 npm i
 
-NODEJS_PATH=`which node`
-
+NODEJS_PATH=$(which node)
 cat > /tmp/run.nginx-log-parser.service << EOF
 [Unit]
 Description=CardanoBI Nginx Log Parser
@@ -98,10 +107,36 @@ sudo systemctl daemon-reload
 sudo systemctl enable run.nginx-log-parser.service
 
 
+# TODO deploy the stored procedure to create nginx usage views
+
+# modifying cron to schedule update of said views
+if [[ $(crontab -l | egrep -v "^(#|$)" | grep -q 'nginx_usage_update'; echo $?) == 1 ]]; then
+    echo "No cron entry found for nginx_usage_update. Adding it."
+
+    # Schedule nginx_usage_update(daily) to run every minute
+    cat > /tmp/crontab-fragment.txt << EOF
+* * * * * psql -d cardanobi_admin -U cardano -W cardano -w -c "call public.nginx_usage_update('daily');"
+EOF
+    crontab -l | cat - /tmp/crontab-fragment.txt >/tmp/crontab.txt && crontab /tmp/crontab.txt
+    rm /tmp/crontab-fragment.txt
+    rm /tmp/crontab.txt
+
+        # Schedule nginx_usage_update(hist) to run once a day at 00:01
+    cat > /tmp/crontab-fragment.txt << EOF
+1 0 * * * psql -d cardanobi_admin -U cardano -W cardano -w -c "call public.nginx_usage_update('hist');"
+EOF
+    crontab -l | cat - /tmp/crontab-fragment.txt >/tmp/crontab.txt && crontab /tmp/crontab.txt
+    rm /tmp/crontab-fragment.txt
+    rm /tmp/crontab.txt
+else
+    echo "Cron entry found for nginx_usage_update. Nothing to do"
+fi
+
+
 echo 
 echo '---------------- Getting our firewall ready ----------------'
 
-# Todo automate this of OCI or Azure depending on deployment platform
+# Todo automate this for OCI or Azure depending on deployment platform
 
 sudo firewall-cmd --zone=public --add-port=4000/tcp --permanent
 sudo firewall-cmd --zone=public --add-port=5000/tcp --permanent

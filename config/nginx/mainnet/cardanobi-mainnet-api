@@ -74,7 +74,7 @@ server {
 	
 	location / {
 		# reject is Client-Api-Key is missing and uri restricted
-	    if ($allowed = "") {
+	    if ($allowed = 0) {
     	    return 403;
     	}
 		# reject if Client-Api-Key is marked as being quota limited.

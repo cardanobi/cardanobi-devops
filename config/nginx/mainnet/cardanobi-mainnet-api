@@ -49,6 +49,7 @@ map $http_client_api_key$request_uri $allowed {
 	"~^.+/api/core/polls$" 1;
 	"~^/api/core/polls/.+$" 1;
 	"~^.+/api/core/polls/.+$" 1;
+	"~^/api/.+$" 0;
 	"~^.+/api/.+$" $http_client_api_key;
 	default 0;
 }

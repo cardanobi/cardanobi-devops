@@ -41,12 +41,25 @@ map $http_client_api_key $is_quota_limited {
 	include /home/cardano/cardanobi-srv/config/nginx/cardanobi-quota-limited.map;
 }
 
+# managing unrestricted uris
+#	Here we define the open uris by adding 2 reg exp, one to match when api key is empty, another one to match when is it not empty!
+#	The penultimate line in the map block catches all other uri and align the need for an api key check with the presence of the api key in the first place!
+map $http_client_api_key$request_uri $allowed {
+	"/api/core/polls" 1;
+	"~^.+/api/core/polls$" 1;
+	"~^/api/core/polls/.+$" 1;
+	"~^.+/api/core/polls/.+$" 1;
+	"~^.+/api/.+$" $http_client_api_key;
+	default 0;
+}
+
 error_page 403 /403.html;
 error_page 402 /402.html;
 
 limit_req_status 429;
 
 server {
+
     server_name preprod.cardanobi.io; # managed by Certbot
 
 	location = /403.html {
@@ -60,8 +73,8 @@ server {
 	}
 	
 	location / {
-		# reject is Client-Api-Key is missing
-	    if ($http_client_api_key = "") {
+		# reject is Client-Api-Key is missing and uri restricted
+	    if ($allowed = 0) {
     	    return 403;
     	}
 		# reject if Client-Api-Key is marked as being quota limited.

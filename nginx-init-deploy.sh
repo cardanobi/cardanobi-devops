@@ -33,20 +33,20 @@ if ! promptyn "Please confirm you want to proceed? (y/n)"; then
 fi
 
 sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/cardanobi-$CARDANOBI_ENV-api /etc/nginx/sites-available
-sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/cardanobi-$CARDANOBI_ENV-default /etc/nginx/sites-available
-sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/cardanobi-$CARDANOBI_ENV-idserver /etc/nginx/sites-available
+# sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/cardanobi-$CARDANOBI_ENV-default /etc/nginx/sites-available
+# sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/cardanobi-$CARDANOBI_ENV-idserver /etc/nginx/sites-available
 sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/cardanobi-$CARDANOBI_ENV-idserver-admin /etc/nginx/sites-available
 sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/cardanobi-$CARDANOBI_ENV-idserver-adminapi /etc/nginx/sites-available
 sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/cardanobi-$CARDANOBI_ENV-idserver-adminui /etc/nginx/sites-available
-sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/cardanobi-$CARDANOBI_ENV-web /etc/nginx/sites-available
+# sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/cardanobi-$CARDANOBI_ENV-web /etc/nginx/sites-available
 
 cd /etc/nginx/sites-enabled
 
 sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-api cardanobi-$CARDANOBI_ENV-api
-sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-default cardanobi-$CARDANOBI_ENV-default
-sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-idserver cardanobi-$CARDANOBI_ENV-idserver
+# sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-default cardanobi-$CARDANOBI_ENV-default
+# sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-idserver cardanobi-$CARDANOBI_ENV-idserver
 sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-idserver-admin cardanobi-$CARDANOBI_ENV-idserver-admin
-sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-idserver-adminapi cardanobi-$CARDANOBI_ENV-idserver-adminap
+sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-idserver-adminapi cardanobi-$CARDANOBI_ENV-idserver-adminapi
 sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-idserver-adminui cardanobi-$CARDANOBI_ENV-idserver-adminui
 # sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-web cardanobi-$CARDANOBI_ENV-web
 

@@ -121,4 +121,22 @@ echo
 # fi
 # echo
 
+STATUS=$(sudo systemctl status run.nginx-log-parser.service | head -3 | tail -1 | awk '{ print $2 }')
+if [[ $STATUS == "active" ]];then
+    tput setaf 2; sudo systemctl status run.nginx-log-parser.service | head -3
+
+    if [[ $PARAM == "stop" || $PARAM == "stop-admin" ]];then
+        echo "Stopping service..."
+        sudo systemctl stop run.nginx-log-parser.service
+    fi
+else
+    tput setaf 1; sudo systemctl status run.nginx-log-parser.service | head -3
+
+    if [[ $PARAM == "start" || $PARAM == "start-admin" ]];then
+        echo "Starting service..."
+        sudo systemctl start run.nginx-log-parser.service
+    fi    
+fi
+echo
+
 tput sgr0

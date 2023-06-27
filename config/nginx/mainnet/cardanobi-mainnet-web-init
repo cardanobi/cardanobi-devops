@@ -2,7 +2,7 @@
 # Listens to 443 and routes to 5002 (Web server target port)
 # Enforces HTTPS throughout via Certbot
 server {
-    server_name mainnet.cardanobi.io; # managed by Certbot
+    server_name cardanobi.io; # managed by Certbot
 
 	location / {
 		# First attempt to serve request as file, then

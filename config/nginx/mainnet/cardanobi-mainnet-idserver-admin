@@ -3,7 +3,7 @@
 # Enforces HTTPS throughout via Certbot
 
 server {
-    server_name mainnet.cardanobi.io; # managed by Certbot
+    server_name cardanobi.io; # managed by Certbot
 
 	location / {
 		# First attempt to serve request as file, then
@@ -18,8 +18,8 @@ server {
 
     listen [::]:44010 ssl ipv6only=on; # managed by Certbot
     listen 44010 ssl; # managed by Certbot
-    ssl_certificate /etc/letsencrypt/live/mainnet.cardanobi.io/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/mainnet.cardanobi.io/privkey.pem; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/cardanobi.io/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/cardanobi.io/privkey.pem; # managed by Certbot
     include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 }

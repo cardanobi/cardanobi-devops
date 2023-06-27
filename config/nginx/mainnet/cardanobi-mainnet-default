@@ -19,14 +19,14 @@
 # Default server configuration
 #
 server {
-	if ($host = mainnet.cardanobi.io) {
+	if ($host = cardanobi.io) {
 		return 301 https://$host$request_uri;
 	} # managed by Certbot
 
 
 	listen 80 ;
 	listen [::]:80 ;
-	server_name mainnet.cardanobi.io;
+	server_name cardanobi.io;
 	return 404; # managed by Certbot
 }
 

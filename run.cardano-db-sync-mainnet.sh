@@ -17,8 +17,8 @@ SCHEMA_DIR=/home/cardano/data/cardanobi-db-sync/schema
 mkdir -p $LEDGER_STATE_DIR
 mkdir -p $SCHEMA_DIR
 
-PGPASSFILE=$CONF_PATH/pgpass-cardanobi cardano-db-sync \
-    --config $CONF_PATH/preprod-config.yaml \
+PGPASSFILE=$SCRIPT_DIR/pgpass-cardanobi cardano-db-sync \
+    --config $SCRIPT_DIR/preprod-config.yaml \
     --socket-path $CARDANO_NODE_SOCKET_PATH \
     --state-dir $LEDGER_STATE_DIR \
     --schema-dir $SCHEMA_DIR

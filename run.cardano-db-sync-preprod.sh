@@ -11,14 +11,14 @@ NODE_ENV="preprod"
 # useful as this script will be run as a systemd service for which no env variable are preloaded
 eval "$(cat ~/.bashrc | tail -n +10)"
 
-LEDGER_STATE_DIR=~/db-sync/ledger-state/$NODE_ENV
-SCHEMA_DIR=~/db-sync/schema
+LEDGER_STATE_DIR=/home/cardano/cardanobi-db-sync/ledger-state/$NODE_ENV
+SCHEMA_DIR=/home/cardano/cardanobi-db-sync/schema
 
 mkdir -p $LEDGER_STATE_DIR
 mkdir -p $SCHEMA_DIR
 
-PGPASSFILE=$CONF_PATH/pgpass-cardanobi cardano-db-sync \
-    --config $CONF_PATH/preprod-config.yaml \
+PGPASSFILE=$SCRIPT_DIR/pgpass-cardanobi cardano-db-sync \
+    --config $SCRIPT_DIR/preprod-config.yaml \
     --socket-path $CARDANO_NODE_SOCKET_PATH \
     --state-dir $LEDGER_STATE_DIR \
     --schema-dir $SCHEMA_DIR

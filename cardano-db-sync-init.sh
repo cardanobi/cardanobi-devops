@@ -39,16 +39,6 @@ echo '---------------- Cabal dependency ----------------'
 ISCABAL=$(which cabal | wc -l)
 
 if [[ $ISCABAL -eq 0 ]];then
-    # echo
-    # echo '---------------- Installing Cabal ----------------'
-    # # Download most recent version (check this is still the right version here: https://www.haskell.org/cabal/download.html)
-    # mkdir -p ~/download/cabal
-    # cd ~/download/cabal
-    # wget https://downloads.haskell.org/~cabal/cabal-install-3.4.0.0/cabal-install-3.4.0.0-x86_64-ubuntu-16.04.tar.xz
-    # tar -xf cabal-install-3.4.0.0-x86_64-ubuntu-16.04.tar.xz
-    # mkdir -p ~/.local/bin
-    # cp cabal ~/.local/bin/
-
     echo
     echo '---------------- Cabal & GHC dependency ----------------'
     curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
@@ -101,7 +91,7 @@ fi
 
 echo
 echo '---------------- Building cardano-db-sync with cabal ----------------'
-INSTALL_PATH=$HOME
+INSTALL_PATH=$BASE_DIR
 INSTALL_PATH=$(prompt_input_default INSTALL_PATH $INSTALL_PATH)
 
 PGPASS_PATH=$CONF_PATH/pgpass-cardanobi
@@ -150,8 +140,8 @@ cabal update
 
 cabal build cardano-db-sync 2>&1 | tee /tmp/build.cardano-db-sync.log
 
-cp -p "$($SCRIPTS_PATH/bin_path.sh cardano-db-sync $INSTALL_PATH/cardano-db-sync)" ~/.local/bin/
+cp -p "$($SCRIPT_DIR/bin_path.sh cardano-db-sync $INSTALL_PATH/cardano-db-sync)" ~/.local/bin/
 cardano-db-sync --version
 
 #Moving schema migration files to our work directory
-cp $INSTALL_PATH/cardano-db-sync/schema/* ~/db-sync/schema
+# cp $INSTALL_PATH/cardano-db-sync/schema/* ~/db-sync/schema

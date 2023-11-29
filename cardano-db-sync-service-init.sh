@@ -4,23 +4,25 @@ NOW=`date +"%Y%m%d_%H%M%S"`
 SCRIPT_DIR="$(realpath "$(dirname "$0")")"
 BASE_DIR="$(realpath "$(dirname "$SCRIPT_DIR")")"
 CONF_PATH="$SCRIPT_DIR/config"
+CARDANO_ENV=${SPOT_PATH##*/}
 
 echo "SCRIPT_DIR: $SCRIPT_DIR"
 echo "BASE_DIR: $BASE_DIR"
 echo "CONF_PATH: $CONF_PATH"
+echo "CARDANO_ENV: $CARDANO_ENV"
 echo
 
 # importing utility functions
 source $SCRIPT_DIR/utils.sh
 
 # cardano-db-sync service setup process
-CARDANO_ENV="mainnet"
+# CARDANO_ENV="mainnet"
 CARDANO_ENV=$(prompt_input_default CARDANO_ENV $CARDANO_ENV)
 
-CARDANO_DB_SYNC_PATH="$HOME/cardano-db-sync"
+CARDANO_DB_SYNC_PATH="$BASE_DIR/cardano-db-sync"
 CARDANO_DB_SYNC_PATH=$(prompt_input_default CARDANO_DB_SYNC_PATH $CARDANO_DB_SYNC_PATH)
 
-CARDANOBI_DB_SYNC_PATH="$HOME/cardanobi-db-sync"
+CARDANOBI_DB_SYNC_PATH="$BASE_DIR/cardanobi-db-sync"
 CARDANOBI_DB_SYNC_PATH=$(prompt_input_default CARDANOBI_DB_SYNC_PATH $CARDANOBI_DB_SYNC_PATH)
 
 echo

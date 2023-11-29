@@ -21,9 +21,10 @@ echo
 sudo apt update
 sudo apt install nginx
 
-# TODO copy relevant cardanobi-ENV-web file from /config/nginx/ENV to /etc/nginx/sites-available
+# TODO copy relevant cardanobi-preprod-web-init file from /config/nginx/ENV to /etc/nginx/sites-available
+#  sudo cp /home/cardano/data/cardanobi-devops/config/nginx/preprod/cardanobi-preprod-web-init /etc/nginx/sites-available
 # TODO sudo rm /etc/nginx/sites-enabled/default
-# TODO sudo cd /etc/nginx/sites-enabled/; sudo ln -s /etc/nginx/sites-enabled/cardanobi-ENV-web cardanobi-ENV-web 
+# TODO cd /etc/nginx/sites-enabled/; sudo ln -s /etc/nginx/sites-available/cardanobi-preprod-web-init cardanobi-preprod-web-init 
 
 echo
 if ! promptyn "Have you modified nginx config to route https traffic to the right port and are you ready to proceed? (y/n)"; then

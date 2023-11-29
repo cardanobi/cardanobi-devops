@@ -2,6 +2,7 @@ import { LogParser } from './logparser.js';
 import Client from 'pg/lib/client.js';
 import crypto from 'crypto';
 import * as dotenv from 'dotenv';
+import http from 'http';
 
 dotenv.config();
 
@@ -64,6 +65,103 @@ const createLogTable = async () => {
     }
 };
 
+const createUsageTable = async () => {
+    try {
+        await client.query(
+            `CREATE TABLE public."_cbi_apikey_usage" (
+                id serial4 NOT NULL,
+                env int4 NOT NULL,
+                api_key varchar(64) NOT NULL,
+                request_count numeric NULL,
+                request_length_total numeric NULL,
+                response_size_total numeric NULL,
+                response_size_total_mb numeric NULL,
+                "date" date NOT NULL,
+                CONSTRAINT "_cbi_apikey_usage_pkey" PRIMARY KEY (id),
+                CONSTRAINT "_cbi_apikey_usage_vkey_unique" UNIQUE (env, api_key)
+            );`);
+            await client.query(
+                `CREATE UNIQUE INDEX _cbi_apikey_usage_index_1 ON public._cbi_apikey_usage USING btree (env, api_key);`);
+        return true;
+    } catch (error) {
+        console.error("createUsageTable error:",error.stack);
+        return false;
+    }
+};
+
+const createUsageDailyMView = async () => {
+    try {
+        await client.query(
+            `CREATE MATERIALIZED VIEW _nginx_usage_daily AS
+            select nls."time"::date as date,
+                nls.api_key,
+                count(1) as request_count, 
+                sum(nls.request_length) as request_length_total,
+                sum(nls.response_size_bytes) as response_size_total,
+                sum(nls.response_size_bytes)/1000000 as response_size_total_mb
+            from "_nginx_logs_staging" nls 
+            where nls."time"::date = now()::date
+            group by nls."time"::date,nls.api_key
+            WITH DATA;
+            `);
+            await client.query(
+                `CREATE UNIQUE INDEX _nginx_usage_daily_index_1 ON _nginx_usage_daily (api_key);`);
+        return true;
+    } catch (error) {
+        console.error("createUsageDailyMView error:",error.stack);
+        return false;
+    }
+};
+
+const createUsageHistMView = async () => {
+    try {
+        await client.query(
+            `CREATE MATERIALIZED VIEW _nginx_usage_hist AS
+            select nls."time"::date as date,
+                nls.api_key,
+                count(1) as request_count, 
+                sum(nls.request_length) as request_length_total,
+                sum(nls.response_size_bytes) as response_size_total,
+                sum(nls.response_size_bytes)/1000000 as response_size_total_mb
+            from "_nginx_logs_staging" nls 
+            where nls."time"::date < now()::date
+            group by nls."time"::date,nls.api_key
+            WITH DATA;
+            `);
+            await client.query(
+                `CREATE UNIQUE INDEX _nginx_usage_hist_index_1 ON _nginx_usage_hist (date, api_key);`);
+        return true;
+    } catch (error) {
+        console.error("createUsageHistMView error:",error.stack);
+        return false;
+    }
+};
+
+const createNginxUsageUpdateProcedure = async () => {
+    try {
+        await client.query(
+            `CREATE OR REPLACE PROCEDURE public.nginx_usage_update(mode text)
+                LANGUAGE plpgsql
+            AS $$
+            begin
+                if mode = 'daily' then
+                    REFRESH MATERIALIZED VIEW CONCURRENTLY _nginx_usage_daily;
+                end if;
+            
+                if mode = 'hist' then
+                    REFRESH MATERIALIZED VIEW CONCURRENTLY _nginx_usage_hist;
+                end if;
+            END;
+            $$;`
+        );
+        return true;
+    } catch (error) {
+        console.error("createNginxUsageUpdateProcedure error:", error.stack);
+        return false;
+    }
+};
+
+
 const checkTableExists = async (tableName) => {
     try {
         var result = await client.query(
@@ -75,6 +173,21 @@ const checkTableExists = async (tableName) => {
         return result.rows;
     } catch (error) {
         console.error("checkTableExists error:",error.stack);
+        return false;
+    }
+};
+
+const checkMaterializedViewExists = async (viewName) => {
+    try {
+        var result = await client.query(
+            `SELECT COUNT(1) FROM 
+                pg_matviews
+             WHERE 
+             schemaname = 'public' AND 
+             matviewname  = $1;`, [viewName]);
+        return result.rows;
+    } catch (error) {
+        console.error("checkMaterializedViewExists error:", error.stack);
         return false;
     }
 };
@@ -144,7 +257,86 @@ if (tableExists[0].count == 0) {
     console.log("Table already exists!");
 }
 
-var source = "cardanobi.preprod@20.98.184.3";
+// create usage table if required
+var tableExists = await checkTableExists("_cbi_apikey_usage");
+if (tableExists[0].count == 0) {
+    await createUsageTable().then(result => {
+        if (result) {
+            console.log("Table created");
+        } else {
+            console.log("Table not created");
+        }
+    });
+} else {
+    console.log("Table already exists!");
+}
+
+// create UsageDaily MView if required
+var tableExists = await checkMaterializedViewExists("_nginx_usage_daily");
+if (tableExists[0].count == 0) {
+    await createUsageDailyMView().then(result => {
+        if (result) {
+            console.log("MView created");
+        } else {
+            console.log("MView not created");
+        }
+    });
+} else {
+    console.log("MView already exists!");
+}
+
+// create UsageHist MView if required
+var tableExists = await checkMaterializedViewExists("_nginx_usage_hist");
+if (tableExists[0].count == 0) {
+    await createUsageHistMView().then(result => {
+        if (result) {
+            console.log("MView created");
+        } else {
+            console.log("MView not created");
+        }
+    });
+} else {
+    console.log("MView already exists!");
+}
+
+// create nginx_usage_update procedure
+await createNginxUsageUpdateProcedure().then(result => {
+    if (result) {
+        console.log("nginx_usage_update created");
+    } else {
+        console.log("nginx_usage_update not created");
+    }
+});
+
+function getPublicIP() {
+    return new Promise((resolve, reject) => {
+        http.get('http://whatismyip.akamai.com/', (resp) => {
+            let data = '';
+
+            // A chunk of data has been received.
+            resp.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            // The whole response has been received.
+            resp.on('end', () => {
+                resolve(data);
+            });
+
+        }).on("error", (err) => {
+            reject("Error: " + err.message);
+        });
+    });
+}
+
+let publicIP = await getPublicIP();
+var source = `cardanobi.preprod@${publicIP}`
+
+// console.log("publicIP:", publicIP);
+// console.log("source:", source);
+// process.exit();
+
+// var source = "cardanobi.preprod@20.98.184.3";
 var logTemplate = "[$time_iso8601] from [$remote_addr] to [$upstream_addr] ,req: [$request] ,reqLength: [$request_length], ApiKey: [$http_client_api_key] ,upstream_response_time: [$upstream_response_time] ,request_time: [$request_time] ,response_size: [$bytes_sent]";
 var logRowValidationRegExp = "(,req.+HTTP.+,ApiKey.+,upstream_response_time.+,response_size)"; 
 var parser = new LogParser(source, logTemplate, logRowValidationRegExp);

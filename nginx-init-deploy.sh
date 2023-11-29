@@ -2,11 +2,11 @@
 # global variables
 NOW=`date +"%Y%m%d_%H%M%S"`
 SCRIPT_DIR="$(realpath "$(dirname "$0")")"
-BASE_DIR="$(realpath "$(dirname "$SCRIPT_DIR")")"
+ROOT_DIR="$(realpath "$(dirname "$SCRIPT_DIR")")"
 CONF_PATH="$SCRIPT_DIR/config"
 
 echo "SCRIPT_DIR: $SCRIPT_DIR"
-echo "BASE_DIR: $BASE_DIR"
+echo "ROOT_DIR: $ROOT_DIR"
 echo "CONF_PATH: $CONF_PATH"
 echo
 
@@ -21,7 +21,7 @@ echo '---------------- Deploying CardanoBI nginx config  ----------------'
 echo
 CARDANOBI_ENV="preprod"
 CARDANOBI_ENV=$(prompt_input_default CARDANOBI_ENV $CARDANOBI_ENV)
-CARDANOBI_SRV_PATH=$BASE_DIR
+CARDANOBI_SRV_PATH=$ROOT_DIR/cardanobi-srv
 CARDANOBI_SRV_PATH=$(prompt_input_default CARDANOBI_SRV_PATH $CARDANOBI_SRV_PATH)
 
 echo
@@ -33,22 +33,16 @@ if ! promptyn "Please confirm you want to proceed? (y/n)"; then
 fi
 
 sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/cardanobi-$CARDANOBI_ENV-api /etc/nginx/sites-available
-# sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/cardanobi-$CARDANOBI_ENV-default /etc/nginx/sites-available
-# sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/cardanobi-$CARDANOBI_ENV-idserver /etc/nginx/sites-available
 sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/cardanobi-$CARDANOBI_ENV-idserver-admin /etc/nginx/sites-available
 sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/cardanobi-$CARDANOBI_ENV-idserver-adminapi /etc/nginx/sites-available
 sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/cardanobi-$CARDANOBI_ENV-idserver-adminui /etc/nginx/sites-available
-# sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/cardanobi-$CARDANOBI_ENV-web /etc/nginx/sites-available
 
 cd /etc/nginx/sites-enabled
 
 sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-api cardanobi-$CARDANOBI_ENV-api
-# sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-default cardanobi-$CARDANOBI_ENV-default
-# sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-idserver cardanobi-$CARDANOBI_ENV-idserver
 sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-idserver-admin cardanobi-$CARDANOBI_ENV-idserver-admin
 sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-idserver-adminapi cardanobi-$CARDANOBI_ENV-idserver-adminapi
 sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-idserver-adminui cardanobi-$CARDANOBI_ENV-idserver-adminui
-# sudo ln -s /etc/nginx/sites-available/cardanobi-$CARDANOBI_ENV-web cardanobi-$CARDANOBI_ENV-web
 
 sudo cp $CONF_PATH/nginx/$CARDANOBI_ENV/*.html /usr/share/nginx/html
 
@@ -66,7 +60,7 @@ mkdir -p $CARDANOBI_SRV_PATH/nginx
 cp  $SCRIPT_DIR/nginx/logparser.js $SCRIPT_DIR/nginx/nginx-log-parser.js $SCRIPT_DIR/nginx/package.json $CARDANOBI_SRV_PATH/nginx
 cd $CARDANOBI_SRV_PATH/nginx
 
-cat > $SCRIPT_DIR/nginx/.env << EOF
+cat > $CARDANOBI_SRV_PATH/nginx/.env << EOF
 CARDANOBI_ADMIN_USERNAME="cardano"
 CARDANOBI_ADMIN_PASSWORD="cardano"
 CARDANOBI_NGINX_LOG_FILE="/var/log/nginx/cardanobi-$CARDANOBI_ENV-api-access.log"

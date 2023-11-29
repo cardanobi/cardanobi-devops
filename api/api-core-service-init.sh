@@ -3,10 +3,12 @@
 NOW=`date +"%Y%m%d_%H%M%S"`
 SCRIPT_DIR="$(realpath "$(dirname "$0")")"
 BASE_DIR="$(realpath "$(dirname "$SCRIPT_DIR")")"
+ROOT_DIR="$(realpath "$(dirname "$BASE_DIR")")"
 CONF_PATH="$BASE_DIR/config"
 
 echo "SCRIPT_DIR: $SCRIPT_DIR"
 echo "BASE_DIR: $BASE_DIR"
+echo "ROOT_DIR: $ROOT_DIR"
 echo "CONF_PATH: $CONF_PATH"
 echo
 
@@ -15,7 +17,7 @@ source $BASE_DIR/utils.sh
 
 echo '---------------- Deploying CardanoBI API Instance Service  ----------------'
 echo
-DEPLOY_PATH="$HOME/cardanobi-srv/api/ApiCore"
+DEPLOY_PATH="$ROOT_DIR/cardanobi-srv/api/ApiCore"
 DEPLOY_PATH=$(prompt_input_default DEPLOY_PATH $DEPLOY_PATH)
 
 echo

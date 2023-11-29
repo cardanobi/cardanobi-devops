@@ -2,18 +2,20 @@
 NOW=`date +"%Y%m%d_%H%M%S"`
 SCRIPT_DIR="$(realpath "$(dirname "$0")")"
 BASE_DIR="$(realpath "$(dirname "$SCRIPT_DIR")")"
+ROOT_DIR="$(realpath "$(dirname "$BASE_DIR")")"
 CONF_PATH="$BASE_DIR/config"
 
 echo "SCRIPT_DIR: $SCRIPT_DIR"
 echo "BASE_DIR: $BASE_DIR"
 echo "CONF_PATH: $CONF_PATH"
+echo "ROOT_DIR: $ROOT_DIR"
 echo
 
 # importing utility functions
 source $BASE_DIR/utils.sh
 
 # from source setup process start - get user input
-INSTALL_PATH=$HOME
+INSTALL_PATH=$ROOT_DIR
 INSTALL_PATH=$(prompt_input_default INSTALL_PATH $INSTALL_PATH)
 
 CARDANOBI_ENV=preprod

@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "glob": "^8.0.3"
+    "glob": "^8.0.3",
+    "dotenv": "^16.0.3"
   },
   "type": "module"
 }

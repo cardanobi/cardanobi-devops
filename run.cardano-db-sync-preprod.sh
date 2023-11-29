@@ -11,8 +11,8 @@ NODE_ENV="preprod"
 # useful as this script will be run as a systemd service for which no env variable are preloaded
 eval "$(cat ~/.bashrc | tail -n +10)"
 
-LEDGER_STATE_DIR=/home/cardano/cardanobi-db-sync/ledger-state/$NODE_ENV
-SCHEMA_DIR=/home/cardano/cardanobi-db-sync/schema
+LEDGER_STATE_DIR=/home/cardano/data/cardanobi-db-sync/ledger-state/$NODE_ENV
+SCHEMA_DIR=/home/cardano/data/cardanobi-db-sync/schema
 
 mkdir -p $LEDGER_STATE_DIR
 mkdir -p $SCHEMA_DIR

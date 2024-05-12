@@ -1,0 +1,639 @@
+{
+    "core": {
+        "epochs": {
+            "endpoints": [
+                {
+                    "name": "latest_",
+                    "path": "/api/core/epochs/latest",
+                    "cleanPath": "/api/core/epochs/latest",
+                    "params": [],
+                    "hasOData": false
+                },
+                {
+                    "name": "params_",
+                    "path": "/api/core/epochs/params",
+                    "cleanPath": "/api/core/epochs/params",
+                    "params": [],
+                    "hasOData": false
+                },
+                {
+                    "name": "params_",
+                    "path": "/api/core/epochs/{epoch_no}/params",
+                    "cleanPath": "/api/core/epochs/params",
+                    "params": [
+                        {
+                            "name": "epoch_no",
+                            "in": "path"
+                        }
+                    ],
+                    "hasOData": false
+                }
+            ],
+            "params": {
+                "endpoints": [
+                    {
+                        "name": "latest_",
+                        "path": "/api/core/epochs/params/latest",
+                        "cleanPath": "/api/core/epochs/params/latest",
+                        "params": [],
+                        "hasOData": false
+                    }
+                ]
+            },
+            "stakes": {
+                "endpoints": [
+                    {
+                        "name": "pools_",
+                        "path": "/api/core/epochs/stakes/pools/{pool_hash}",
+                        "cleanPath": "/api/core/epochs/stakes/pools",
+                        "params": [
+                            {
+                                "name": "pool_hash",
+                                "in": "path"
+                            }
+                        ],
+                        "hasOData": false
+                    },
+                    {
+                        "name": "pools_",
+                        "path": "/api/core/epochs/{epoch_no}/stakes/pools/{pool_hash}",
+                        "cleanPath": "/api/core/epochs/stakes/pools",
+                        "params": [
+                            {
+                                "name": "epoch_no",
+                                "in": "path"
+                            },
+                            {
+                                "name": "pool_hash",
+                                "in": "path"
+                            }
+                        ],
+                        "hasOData": false
+                    }
+                ]
+            },
+            "latest": {
+                "stakes": {
+                    "endpoints": [
+                        {
+                            "name": "pools_",
+                            "path": "/api/core/epochs/latest/stakes/pools/{pool_hash}",
+                            "cleanPath": "/api/core/epochs/latest/stakes/pools",
+                            "params": [
+                                {
+                                    "name": "pool_hash",
+                                    "in": "path"
+                                }
+                            ],
+                            "hasOData": false
+                        }
+                    ]
+                }
+            }
+        },
+        "endpoints": [
+            {
+                "name": "epochs_",
+                "path": "/api/core/epochs",
+                "cleanPath": "/api/core/epochs",
+                "params": [],
+                "hasOData": false
+            },
+            {
+                "name": "epochs_",
+                "path": "/api/core/epochs/{epoch_no}",
+                "cleanPath": "/api/core/epochs",
+                "params": [
+                    {
+                        "name": "epoch_no",
+                        "in": "path"
+                    }
+                ],
+                "hasOData": false
+            },
+            {
+                "name": "epochs_",
+                "path": "/api/core/odata/epochs",
+                "cleanPath": "/api/core/epochs",
+                "params": [],
+                "hasOData": true
+            },
+            {
+                "name": "epochs_",
+                "path": "/api/core/odata/epochs/{epoch_no}",
+                "cleanPath": "/api/core/epochs",
+                "params": [
+                    {
+                        "name": "epoch_no",
+                        "in": "path"
+                    }
+                ],
+                "hasOData": true
+            },
+            {
+                "name": "epochsparams_",
+                "path": "/api/core/odata/epochsparams",
+                "cleanPath": "/api/core/epochsparams",
+                "params": [],
+                "hasOData": true
+            },
+            {
+                "name": "epochsparams_",
+                "path": "/api/core/odata/epochsparams/{epoch_no}",
+                "cleanPath": "/api/core/epochsparams",
+                "params": [
+                    {
+                        "name": "epoch_no",
+                        "in": "path"
+                    }
+                ],
+                "hasOData": true
+            },
+            {
+                "name": "epochsstakes_",
+                "path": "/api/core/odata/epochsstakes",
+                "cleanPath": "/api/core/epochsstakes",
+                "params": [
+                    {
+                        "name": "epoch_no",
+                        "in": "query"
+                    },
+                    {
+                        "name": "pool_hash",
+                        "in": "query"
+                    }
+                ],
+                "hasOData": true
+            },
+            {
+                "name": "polls_",
+                "path": "/api/core/polls",
+                "cleanPath": "/api/core/polls",
+                "params": [
+                    {
+                        "name": "page_no",
+                        "in": "query"
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "name": "order",
+                        "in": "query"
+                    }
+                ],
+                "hasOData": false
+            },
+            {
+                "name": "polls_",
+                "path": "/api/core/polls/{poll_hash}",
+                "cleanPath": "/api/core/polls",
+                "params": [
+                    {
+                        "name": "poll_hash",
+                        "in": "path"
+                    }
+                ],
+                "hasOData": false
+            },
+            {
+                "name": "poolshashes_",
+                "path": "/api/core/odata/poolshashes",
+                "cleanPath": "/api/core/poolshashes",
+                "params": [],
+                "hasOData": true
+            },
+            {
+                "name": "poolsmetadata_",
+                "path": "/api/core/odata/poolsmetadata",
+                "cleanPath": "/api/core/poolsmetadata",
+                "params": [],
+                "hasOData": true
+            },
+            {
+                "name": "poolsmetadata_",
+                "path": "/api/core/odata/poolsmetadata/{pool_id}",
+                "cleanPath": "/api/core/poolsmetadata",
+                "params": [
+                    {
+                        "name": "pool_id",
+                        "in": "path"
+                    }
+                ],
+                "hasOData": true
+            },
+            {
+                "name": "poolsofflinedata_",
+                "path": "/api/core/odata/poolsofflinedata",
+                "cleanPath": "/api/core/poolsofflinedata",
+                "params": [],
+                "hasOData": true
+            },
+            {
+                "name": "poolsofflinedata_",
+                "path": "/api/core/odata/poolsofflinedata/{pool_id}",
+                "cleanPath": "/api/core/poolsofflinedata",
+                "params": [
+                    {
+                        "name": "pool_id",
+                        "in": "path"
+                    }
+                ],
+                "hasOData": true
+            },
+            {
+                "name": "poolsofflinefetcherrors_",
+                "path": "/api/core/odata/poolsofflinefetcherrors",
+                "cleanPath": "/api/core/poolsofflinefetcherrors",
+                "params": [],
+                "hasOData": true
+            },
+            {
+                "name": "poolsofflinefetcherrors_",
+                "path": "/api/core/odata/poolsofflinefetcherrors/{pool_id}",
+                "cleanPath": "/api/core/poolsofflinefetcherrors",
+                "params": [
+                    {
+                        "name": "pool_id",
+                        "in": "path"
+                    }
+                ],
+                "hasOData": true
+            },
+            {
+                "name": "poolsrelays_",
+                "path": "/api/core/odata/poolsrelays",
+                "cleanPath": "/api/core/poolsrelays",
+                "params": [],
+                "hasOData": true
+            },
+            {
+                "name": "poolsrelays_",
+                "path": "/api/core/odata/poolsrelays/{update_id}",
+                "cleanPath": "/api/core/poolsrelays",
+                "params": [
+                    {
+                        "name": "update_id",
+                        "in": "path"
+                    }
+                ],
+                "hasOData": true
+            },
+            {
+                "name": "poolsupdates_",
+                "path": "/api/core/odata/poolsupdates",
+                "cleanPath": "/api/core/poolsupdates",
+                "params": [],
+                "hasOData": true
+            },
+            {
+                "name": "poolsupdates_",
+                "path": "/api/core/odata/poolsupdates/{pool_id}",
+                "cleanPath": "/api/core/poolsupdates",
+                "params": [
+                    {
+                        "name": "pool_id",
+                        "in": "path"
+                    }
+                ],
+                "hasOData": true
+            },
+            {
+                "name": "transactions_",
+                "path": "/api/core/transactions/{transaction_hash}",
+                "cleanPath": "/api/core/transactions",
+                "params": [
+                    {
+                        "name": "transaction_hash",
+                        "in": "path"
+                    }
+                ],
+                "hasOData": false
+            }
+        ],
+        "pools": {
+            "endpoints": [
+                {
+                    "name": "hashes_",
+                    "path": "/api/core/pools/hashes",
+                    "cleanPath": "/api/core/pools/hashes",
+                    "params": [],
+                    "hasOData": false
+                },
+                {
+                    "name": "metadata_",
+                    "path": "/api/core/pools/metadata",
+                    "cleanPath": "/api/core/pools/metadata",
+                    "params": [],
+                    "hasOData": false
+                },
+                {
+                    "name": "metadata_",
+                    "path": "/api/core/pools/{pool_id}/metadata",
+                    "cleanPath": "/api/core/pools/metadata",
+                    "params": [
+                        {
+                            "name": "pool_id",
+                            "in": "path"
+                        }
+                    ],
+                    "hasOData": false
+                },
+                {
+                    "name": "offlinedata_",
+                    "path": "/api/core/pools/offlinedata",
+                    "cleanPath": "/api/core/pools/offlinedata",
+                    "params": [],
+                    "hasOData": false
+                },
+                {
+                    "name": "offlinedata_",
+                    "path": "/api/core/pools/{pool_id}/offlinedata",
+                    "cleanPath": "/api/core/pools/offlinedata",
+                    "params": [
+                        {
+                            "name": "pool_id",
+                            "in": "path"
+                        }
+                    ],
+                    "hasOData": false
+                },
+                {
+                    "name": "offlinedata_",
+                    "path": "/api/core/pools/{ticker}/offlinedata",
+                    "cleanPath": "/api/core/pools/offlinedata",
+                    "params": [
+                        {
+                            "name": "ticker",
+                            "in": "path"
+                        }
+                    ],
+                    "hasOData": false
+                },
+                {
+                    "name": "offlinefetcherrors_",
+                    "path": "/api/core/pools/offlinefetcherrors",
+                    "cleanPath": "/api/core/pools/offlinefetcherrors",
+                    "params": [],
+                    "hasOData": false
+                },
+                {
+                    "name": "offlinefetcherrors_",
+                    "path": "/api/core/pools/{pool_id}/offlinefetcherrors",
+                    "cleanPath": "/api/core/pools/offlinefetcherrors",
+                    "params": [
+                        {
+                            "name": "pool_id",
+                            "in": "path"
+                        }
+                    ],
+                    "hasOData": false
+                },
+                {
+                    "name": "updates_",
+                    "path": "/api/core/pools/updates",
+                    "cleanPath": "/api/core/pools/updates",
+                    "params": [],
+                    "hasOData": false
+                },
+                {
+                    "name": "updates_",
+                    "path": "/api/core/pools/{pool_id}/updates",
+                    "cleanPath": "/api/core/pools/updates",
+                    "params": [
+                        {
+                            "name": "pool_id",
+                            "in": "path"
+                        }
+                    ],
+                    "hasOData": false
+                },
+                {
+                    "name": "updates_",
+                    "path": "/api/core/pools/{vrf_key_hash}/updates",
+                    "cleanPath": "/api/core/pools/updates",
+                    "params": [
+                        {
+                            "name": "vrf_key_hash",
+                            "in": "path"
+                        }
+                    ],
+                    "hasOData": false
+                }
+            ],
+            "metadata": {
+                "endpoints": [
+                    {
+                        "name": "hashes_",
+                        "path": "/api/core/pools/metadata/hashes/{meta_hash}",
+                        "cleanPath": "/api/core/pools/metadata/hashes",
+                        "params": [
+                            {
+                                "name": "meta_hash",
+                                "in": "path"
+                            }
+                        ],
+                        "hasOData": false
+                    },
+                    {
+                        "name": "offlinedata_",
+                        "path": "/api/core/pools/metadata/{meta_hash}/offlinedata",
+                        "cleanPath": "/api/core/pools/metadata/offlinedata",
+                        "params": [
+                            {
+                                "name": "meta_hash",
+                                "in": "path"
+                            }
+                        ],
+                        "hasOData": false
+                    }
+                ]
+            },
+            "relays": {
+                "endpoints": [
+                    {
+                        "name": "updates_",
+                        "path": "/api/core/pools/relays/updates",
+                        "cleanPath": "/api/core/pools/relays/updates",
+                        "params": [],
+                        "hasOData": false
+                    },
+                    {
+                        "name": "updates_",
+                        "path": "/api/core/pools/relays/updates/{update_id}",
+                        "cleanPath": "/api/core/pools/relays/updates",
+                        "params": [
+                            {
+                                "name": "update_id",
+                                "in": "path"
+                            }
+                        ],
+                        "hasOData": false
+                    },
+                    {
+                        "name": "updates_",
+                        "path": "/api/core/pools/{vrf_key_hash}/relays/updates",
+                        "cleanPath": "/api/core/pools/relays/updates",
+                        "params": [
+                            {
+                                "name": "vrf_key_hash",
+                                "in": "path"
+                            }
+                        ],
+                        "hasOData": false
+                    }
+                ]
+            }
+        },
+        "transactions": {
+            "endpoints": [
+                {
+                    "name": "utxos_",
+                    "path": "/api/core/transactions/{transaction_hash}/utxos",
+                    "cleanPath": "/api/core/transactions/utxos",
+                    "params": [
+                        {
+                            "name": "transaction_hash",
+                            "in": "path"
+                        }
+                    ],
+                    "hasOData": false
+                },
+                {
+                    "name": "stake_address_registrations_",
+                    "path": "/api/core/transactions/{transaction_hash}/stake_address_registrations",
+                    "cleanPath": "/api/core/transactions/stake_address_registrations",
+                    "params": [
+                        {
+                            "name": "transaction_hash",
+                            "in": "path"
+                        }
+                    ],
+                    "hasOData": false
+                },
+                {
+                    "name": "stake_address_delegations_",
+                    "path": "/api/core/transactions/{transaction_hash}/stake_address_delegations",
+                    "cleanPath": "/api/core/transactions/stake_address_delegations",
+                    "params": [
+                        {
+                            "name": "transaction_hash",
+                            "in": "path"
+                        }
+                    ],
+                    "hasOData": false
+                },
+                {
+                    "name": "withdrawals_",
+                    "path": "/api/core/transactions/{transaction_hash}/withdrawals",
+                    "cleanPath": "/api/core/transactions/withdrawals",
+                    "params": [
+                        {
+                            "name": "transaction_hash",
+                            "in": "path"
+                        }
+                    ],
+                    "hasOData": false
+                },
+                {
+                    "name": "treasury_",
+                    "path": "/api/core/transactions/{transaction_hash}/treasury",
+                    "cleanPath": "/api/core/transactions/treasury",
+                    "params": [
+                        {
+                            "name": "transaction_hash",
+                            "in": "path"
+                        }
+                    ],
+                    "hasOData": false
+                },
+                {
+                    "name": "reserves_",
+                    "path": "/api/core/transactions/{transaction_hash}/reserves",
+                    "cleanPath": "/api/core/transactions/reserves",
+                    "params": [
+                        {
+                            "name": "transaction_hash",
+                            "in": "path"
+                        }
+                    ],
+                    "hasOData": false
+                },
+                {
+                    "name": "param_proposals_",
+                    "path": "/api/core/transactions/{transaction_hash}/param_proposals",
+                    "cleanPath": "/api/core/transactions/param_proposals",
+                    "params": [
+                        {
+                            "name": "transaction_hash",
+                            "in": "path"
+                        }
+                    ],
+                    "hasOData": false
+                },
+                {
+                    "name": "retiring_pools_",
+                    "path": "/api/core/transactions/{transaction_hash}/retiring_pools",
+                    "cleanPath": "/api/core/transactions/retiring_pools",
+                    "params": [
+                        {
+                            "name": "transaction_hash",
+                            "in": "path"
+                        }
+                    ],
+                    "hasOData": false
+                },
+                {
+                    "name": "updating_pools_",
+                    "path": "/api/core/transactions/{transaction_hash}/updating_pools",
+                    "cleanPath": "/api/core/transactions/updating_pools",
+                    "params": [
+                        {
+                            "name": "transaction_hash",
+                            "in": "path"
+                        }
+                    ],
+                    "hasOData": false
+                },
+                {
+                    "name": "metadata_",
+                    "path": "/api/core/transactions/{transaction_hash}/metadata",
+                    "cleanPath": "/api/core/transactions/metadata",
+                    "params": [
+                        {
+                            "name": "transaction_hash",
+                            "in": "path"
+                        }
+                    ],
+                    "hasOData": false
+                },
+                {
+                    "name": "assetmints_",
+                    "path": "/api/core/transactions/{transaction_hash}/assetmints",
+                    "cleanPath": "/api/core/transactions/assetmints",
+                    "params": [
+                        {
+                            "name": "transaction_hash",
+                            "in": "path"
+                        }
+                    ],
+                    "hasOData": false
+                },
+                {
+                    "name": "redeemers_",
+                    "path": "/api/core/transactions/{transaction_hash}/redeemers",
+                    "cleanPath": "/api/core/transactions/redeemers",
+                    "params": [
+                        {
+                            "name": "transaction_hash",
+                            "in": "path"
+                        }
+                    ],
+                    "hasOData": false
+                }
+            ]
+        }
+    },
+    "bi": {}
+}

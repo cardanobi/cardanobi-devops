@@ -6,8 +6,15 @@ CARDANOBI_DIR="$HOME/cardanobi"
 CONF_PATH="$CARDANOBI_DIR/config"
 SCRIPTS_PATH="$CARDANOBI_DIR/scripts"
 
+# echo $SCRIPT_DIR
+# echo $CARDANOBI_DIR
+# echo $CONF_PATH
+# echo $SCRIPTS_PATH
+
+# exit 1
+
 # importing utility functions
-source $SCRIPTS_PATH/utils.sh
+# source $SCRIPTS_PATH/utils.sh
 
 if [[ $# -eq 2 && ! $1 == "" && ! $2 == "" ]]; then DOCS_SOURCE_PATH=$1; DOCS_DEST_PATH=$2;
 else 

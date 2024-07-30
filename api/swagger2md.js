@@ -6,9 +6,9 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 const CBI = await new CardanoBI({
-  apiKey: process.env.CBI_API_KEY,
-  apiSecret: process.env.CBI_API_SECRET,
-  network:  process.env.CBI_EN
+    apiKey: process.env.CBI_API_KEY,
+    apiSecret: process.env.CBI_API_SECRET,
+    network: process.env.CBI_ENV
 });
 import glob from 'glob';
 import fs from 'fs';
@@ -16,9 +16,9 @@ import fs from 'fs';
 async function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-  
+
 async function asyncAwaitCaller(controller, functionName, params) {
-    let funcArray = []; 
+    let funcArray = [];
     if (params) {
         funcArray.push(() => controller[functionName](params));
     } else {
@@ -64,7 +64,7 @@ function loadCacheResponse(cbi, out_dir_cache, path, domain, entity, params, isO
     console.log("loadCacheResponse START ", path);
     return new Promise((resolve, reject) => {
         /* determine the api call function */
-        let path_suffix = path.substring(path.indexOf(domain)).replaceAll(/\{(.*?)\}/g, "").replace("//","/").replace(/odata(.\/?)/, "");
+        let path_suffix = path.substring(path.indexOf(domain)).replaceAll(/\{(.*?)\}/g, "").replace("//", "/").replace(/odata(.\/?)/, "");
         if (path_suffix.slice(-1) == "/") path_suffix = path_suffix.substring(0, path_suffix.length - 1);
         let proto = path_suffix.split("/");
         let apiFunc = proto.join(".");
@@ -83,7 +83,7 @@ function loadCacheResponse(cbi, out_dir_cache, path, domain, entity, params, isO
             .then(resp => {
                 resolve(resp);
                 let cache_file = `${out_dir_cache}/${path.slice(1).replaceAll("/", ".")}`;
-                if ((!isOData && Array.isArray(resp[0])) || 
+                if ((!isOData && Array.isArray(resp[0])) ||
                     (isOData && Array.isArray(resp[0]['value']))) {
                     // Only keep first and last objects
                     let spacerObj = ['...'];
@@ -101,7 +101,7 @@ function loadCacheResponse(cbi, out_dir_cache, path, domain, entity, params, isO
             .catch(err => {
                 // reject(handleError(err));
                 //handleError(err);
-                console.log("asyncAwaitCaller error, path:",path,", domain:",domain,", funcName:",funcName," ,options:",options," ,err:",err);
+                console.log("asyncAwaitCaller error, path:", path, ", domain:", domain, ", funcName:", funcName, " ,options:", options, " ,err:", err);
             });
     });
 }
@@ -127,6 +127,56 @@ function loadResponseFromCache(out_dir_cache, path) {
 // };
 
 // preprod
+// var apiParamsMap = {
+//     "epoch_no": 394,
+//     "no": 394,
+//     "pool_id": 4268,
+//     "meta_hash": "42771b05b30f180890980613b3147f6bb797fe1f8a83e92d39a3135ec9559ea8",
+//     "pool_hash": "pool1y24nj4qdkg35nvvnfawukauggsxrxuy74876cplmxsee29w5axc",
+//     "vrf_key_hash": "9be345bcbcb0cf0559b1135467fd2e4c78c741898cdf8bcb737b2dc5122632df",
+//     "address": "stake_test1urcfhe8rvzg8t4066nrc43tsj3zdc6tep8uht7gpfjwxmpq6crkjl",
+//     // "stake_address": "stake_test1urcfhe8rvzg8t4066nrc43tsj3zdc6tep8uht7gpfjwxmpq6crkjl",
+//     "stake_address": {
+//         "default": "stake_test1uqh4cqczjpcjgnd3vhntldk9utmc3754tyrxy9seghptzwc6zayzz",
+//         "delegations": "stake_test1urkmj2vzdey7ac065rleyrc03fzp7gxxhw32pzgxv8dwuasaqtjuz",
+//         "registrations": "stake_test1urkmj2vzdey7ac065rleyrc03fzp7gxxhw32pzgxv8dwuasaqtjuz",
+//         "assets": "stake_test1urz84tnkqjx37tqfk02a58yhusajp2qgfyuz5nekqvrm97qdql4ha"
+//     },
+//     "ticker": "ADACT",
+//     "update_id": 1,
+//     "block_no": 8415364,
+//     "block_hash": "89ff1090614105a919c9ccc8bb3914aaef1ddd28214a4d55ff65436d2c9fc0b2",
+//     "slot_no": 85165743,
+//     "depth": 20,
+//     "transaction_hash": {
+//         "default": "5f6f72b00ae982492823fb541153e6c2afc9cb7231687f2a5d82a994f61764a0",
+//         "utxos": "5f6f72b00ae982492823fb541153e6c2afc9cb7231687f2a5d82a994f61764a0",
+//         "stake_address_registrations": "13919fc14338f13fa10497293f709f9c12c6275c5b38baa0c60786ffdd51bebb",
+//         "stake_address_delegations": "e963b50c5a1078f0fbe11c375d047af3a1b2112538ed6cf852809ebbf4dd8440",
+//         "withdrawals": "cb44c5dd07ab3fee81f05ddd3e4596d2664e6c0ae77bccf99d1c9605dd01808d",
+//         "treasury": "0bc50b20e16268419048790f6ae3667a1480418dd9faed543bc0e8ca32ea7a08",
+//         "reserves": "27dff3f43c460e779e35eff505f5f159c4283a8221b31ee17cdcd5b31ad221ba",
+//         "param_proposals": "62c3c13187423c47f629e6187f36fbd61a9ba1d05d101588340cfbfdf47b22d2",
+//         "retiring_pools": "0d8eadd3bd58bd1a34641ea4100de509f081fe5dd7ecd33d7da52cbeb8e93494",
+//         "updating_pools": "37b67370c0e71b6e15d6d5f564a5069461e472a26e6f46a813743458285aef8d",
+//         "metadata": "6b85afe3fc01c6d3503a5dac8343b56b67f504bb2399deba8b09f8024790b9c4",
+//         "assetmints": "5f6f72b00ae982492823fb541153e6c2afc9cb7231687f2a5d82a994f61764a0",
+//         "redeemers": "e584995ed133ae25e5c918d794efa415e10352b0d0e08aa02a196bbd605b9e69",
+//     },
+//     "page_no": 1,
+//     "page_size": 20,
+//     "order": "desc",
+//     "fingerprint": {
+//         "default": "asset1w8wujx5xpxk88u94t0c60lsjlgwpd635a3c3lc",
+//         "history": "asset1gqp4wdmclgw2tqmkm3nq7jdstvqpesdj3agnel",
+//         "transactions": "asset1gqp4wdmclgw2tqmkm3nq7jdstvqpesdj3agnel",
+//         "addresses": "asset1gqp4wdmclgw2tqmkm3nq7jdstvqpesdj3agnel"
+//     },
+//     "policy_hash": "706e1c53ed984b016f2c0fc79a450fdb572aa21e4e87d6f74d0b6e8a",
+//     "poll_hash": "62c6be72bdf0b5b16e37e4f55cf87e46bd1281ee358b25b8006358bf25e71798"
+// };
+
+// mainnet
 var apiParamsMap = {
     "epoch_no": 394,
     "no": 394,
@@ -134,13 +184,13 @@ var apiParamsMap = {
     "meta_hash": "42771b05b30f180890980613b3147f6bb797fe1f8a83e92d39a3135ec9559ea8",
     "pool_hash": "pool1y24nj4qdkg35nvvnfawukauggsxrxuy74876cplmxsee29w5axc",
     "vrf_key_hash": "9be345bcbcb0cf0559b1135467fd2e4c78c741898cdf8bcb737b2dc5122632df",
-    "address": "stake_test1urcfhe8rvzg8t4066nrc43tsj3zdc6tep8uht7gpfjwxmpq6crkjl",
-    // "stake_address": "stake_test1urcfhe8rvzg8t4066nrc43tsj3zdc6tep8uht7gpfjwxmpq6crkjl",
+    "address": "stake1u8a9qstrmj4rvc3k5z8fems7f0j2vztz8det2klgakhfc8ce79fma",
+    // "stake_address": "stake1u8a9qstrmj4rvc3k5z8fems7f0j2vztz8det2klgakhfc8ce79fma",
     "stake_address": {
-        "default": "stake_test1uqh4cqczjpcjgnd3vhntldk9utmc3754tyrxy9seghptzwc6zayzz",
-        "delegations": "stake_test1urkmj2vzdey7ac065rleyrc03fzp7gxxhw32pzgxv8dwuasaqtjuz",
-        "registrations": "stake_test1urkmj2vzdey7ac065rleyrc03fzp7gxxhw32pzgxv8dwuasaqtjuz",
-        "assets": "stake_test1urz84tnkqjx37tqfk02a58yhusajp2qgfyuz5nekqvrm97qdql4ha"
+        "default": "stake1u8a9qstrmj4rvc3k5z8fems7f0j2vztz8det2klgakhfc8ce79fma",
+        "withdrawals": "stake1u9frlh9lvpdjva46ge0yc4c8zg5e0d37ch42zyyrzmu2hygnmy4xc",
+        "mirs": "stake1uypy44wqjznc5w9ns9gsguz4ta83jekrg9d0wupa7j3zsacwvq5ex",
+        "assets": "stake1uyq4f9rye96ywptukdypkdu69gc4sd34hwzd940pxslczhc7n5vyt",
     },
     "ticker": "ADACT",
     "update_id": 1,
@@ -173,51 +223,8 @@ var apiParamsMap = {
         "addresses": "asset1gqp4wdmclgw2tqmkm3nq7jdstvqpesdj3agnel"
     },
     "policy_hash": "706e1c53ed984b016f2c0fc79a450fdb572aa21e4e87d6f74d0b6e8a",
-    "poll_hash": "62c6be72bdf0b5b16e37e4f55cf87e46bd1281ee358b25b8006358bf25e71798"
+    "poll_hash": "96861fe7da8d45ba5db95071ed3889ed1412929f33610636c072a4b5ab550211"
 };
-
-// mainnet
-// var apiParamsMap = {
-//     "epoch_no": 394,
-//     "no": 394,
-//     "pool_id": 4268,
-//     "meta_hash": "42771b05b30f180890980613b3147f6bb797fe1f8a83e92d39a3135ec9559ea8",
-//     "pool_hash": "pool1y24nj4qdkg35nvvnfawukauggsxrxuy74876cplmxsee29w5axc",
-//     "vrf_key_hash": "9be345bcbcb0cf0559b1135467fd2e4c78c741898cdf8bcb737b2dc5122632df",
-//     "address": "stake1u8a9qstrmj4rvc3k5z8fems7f0j2vztz8det2klgakhfc8ce79fma",
-//     "stake_address": "stake1u8a9qstrmj4rvc3k5z8fems7f0j2vztz8det2klgakhfc8ce79fma",
-//     "ticker": "ADACT",
-//     "update_id": 1,
-//     "block_no": 8415364,
-//     "block_hash": "89ff1090614105a919c9ccc8bb3914aaef1ddd28214a4d55ff65436d2c9fc0b2",
-//     "slot_no": 85165743,
-//     "depth": 20,
-//     "transaction_hash": {
-//         "default": "5f6f72b00ae982492823fb541153e6c2afc9cb7231687f2a5d82a994f61764a0",
-//         "utxos": "5f6f72b00ae982492823fb541153e6c2afc9cb7231687f2a5d82a994f61764a0",
-//         "stake_address_registrations": "13919fc14338f13fa10497293f709f9c12c6275c5b38baa0c60786ffdd51bebb",
-//         "stake_address_delegations": "e963b50c5a1078f0fbe11c375d047af3a1b2112538ed6cf852809ebbf4dd8440",
-//         "withdrawals": "cb44c5dd07ab3fee81f05ddd3e4596d2664e6c0ae77bccf99d1c9605dd01808d",
-//         "treasury": "0bc50b20e16268419048790f6ae3667a1480418dd9faed543bc0e8ca32ea7a08",
-//         "reserves": "27dff3f43c460e779e35eff505f5f159c4283a8221b31ee17cdcd5b31ad221ba",
-//         "param_proposals": "62c3c13187423c47f629e6187f36fbd61a9ba1d05d101588340cfbfdf47b22d2",
-//         "retiring_pools": "0d8eadd3bd58bd1a34641ea4100de509f081fe5dd7ecd33d7da52cbeb8e93494",
-//         "updating_pools": "37b67370c0e71b6e15d6d5f564a5069461e472a26e6f46a813743458285aef8d",
-//         "metadata": "6b85afe3fc01c6d3503a5dac8343b56b67f504bb2399deba8b09f8024790b9c4",
-//         "assetmints": "5f6f72b00ae982492823fb541153e6c2afc9cb7231687f2a5d82a994f61764a0",
-//         "redeemers": "e584995ed133ae25e5c918d794efa415e10352b0d0e08aa02a196bbd605b9e69",
-//     },
-//     "page_no": 1,
-//     "page_size": 20,
-//     "order": "desc",
-//     "fingerprint": {
-//         "default": "asset1w8wujx5xpxk88u94t0c60lsjlgwpd635a3c3lc",
-//         "history": "asset1gqp4wdmclgw2tqmkm3nq7jdstvqpesdj3agnel",
-//         "transactions": "asset1gqp4wdmclgw2tqmkm3nq7jdstvqpesdj3agnel",
-//         "addresses": "asset1gqp4wdmclgw2tqmkm3nq7jdstvqpesdj3agnel"
-//     },
-//     "policy_hash": "706e1c53ed984b016f2c0fc79a450fdb572aa21e4e87d6f74d0b6e8a"
-// };
 
 // var apiParamsMap = {
 //     "Epoch number": 394,
@@ -245,7 +252,7 @@ function generateNodejsCode(path, domain, entity, params, isOData) {
     let code = "const CBI = await new CardanoBI({ apiKey: 'YOUR-KEY', apiSecret: 'YOUR-SECRET' }); ";
 
     /* determine the api call function */
-    let path_suffix = path.substring(path.indexOf(domain) + domain.length + 1).replaceAll(/\{(.*?)\}/g, "").replace("//","/").replace(/odata(.\/?)/, "");
+    let path_suffix = path.substring(path.indexOf(domain) + domain.length + 1).replaceAll(/\{(.*?)\}/g, "").replace("//", "/").replace(/odata(.\/?)/, "");
     if (path_suffix.slice(-1) == "/") path_suffix = path_suffix.substring(0, path_suffix.length - 1);
     let proto = path_suffix.split("/");
     let apiFunc = proto.join(".");
@@ -254,13 +261,6 @@ function generateNodejsCode(path, domain, entity, params, isOData) {
     let options = {};
 
     if (isOData) options['odata'] = true;
-        
-    // params.forEach(p => {
-    //     let name = p[1].name;
-    //     let description = p[1].description;
-
-    //     options[name] = apiParamsMap[name];
-    // });
 
     params.forEach(pa => {
         let param_value = undefined;
@@ -275,24 +275,13 @@ function generateNodejsCode(path, domain, entity, params, isOData) {
                 if (typeof apiParamsMap[name] === 'object') {
                     let idx = path.lastIndexOf(`{${name}}/`);
                     let context = idx > 0 ? path.slice(path.lastIndexOf("/") + 1) : "default";
-                    // options[name] = apiParamsMap[name][context] ? apiParamsMap[name][context] : "unknown_param";
                     param_value = apiParamsMap[name][context] ? apiParamsMap[name][context] : apiParamsMap[name]["default"];
                 } else {
-                    // options[name] = apiParamsMap[name];
                     param_value = apiParamsMap[name];
                 }
-                
+
                 options[name] = param_value;
-    
-                // if (scope == "path") {
-                //     options[name] = param_value;
-                // } else if (scope == "query") {
-                //     if (options["query"]) {
-                //         options["query"] = `${options["query"]}&${name}=${param_value}`;
-                //     } else {
-                //         options["query"] = `${name}=${param_value}`;
-                //     }
-                // }
+
             } else {
                 console.log("Warning - Missing apiParamsMap entry for: ", description);
             }
@@ -306,7 +295,7 @@ function generateNodejsCode(path, domain, entity, params, isOData) {
         code += `\nconst ${varName} = await CBI.${domain}.${apiFunc}_();`;
     else
         code += `\nconst ${varName} = await CBI.${domain}.${apiFunc}_(${JSON.stringify(options, null, " ").replaceAll("\n", "").replace("}", " }")});`;
-    
+
     params.forEach(pa => {
         let name = pa[1].name;
         code = code.replace(`"${name}"`, `${name}`);
@@ -318,6 +307,145 @@ function generateNodejsCode(path, domain, entity, params, isOData) {
     console.log(code);
     return code;
 }
+
+function generatePythonCode(path, domain, entity, params, isOData) {
+    let code = "CBI = CardanoBI(apiKey='YOUR-KEY', apiSecret='YOUR-SECRET' }); ";
+
+    /* determine the api call function */
+    let path_suffix = path.substring(path.indexOf(domain) + domain.length + 1).replaceAll(/\{(.*?)\}/g, "").replace("//", "/").replace(/odata(.\/?)/, "");
+    if (path_suffix.slice(-1) == "/") path_suffix = path_suffix.substring(0, path_suffix.length - 1);
+    let proto = path_suffix.split("/");
+    let apiFunc = proto.join(".");
+
+    /* determine the options string */
+    let options = {};
+
+    if (isOData) options['odata'] = true;
+
+    params.forEach(pa => {
+        let param_value = undefined;
+        let name = pa[1].name;
+        let description = pa[1].description;
+        let scope = pa[1].in;
+
+        // only mandatory params (e.g. in path) are used in code samples
+        // in query parameters are optional and therefore not represented in code samples
+        if (scope == 'path') {
+            if (apiParamsMap[name]) {
+                if (typeof apiParamsMap[name] === 'object') {
+                    let idx = path.lastIndexOf(`{${name}}/`);
+                    let context = idx > 0 ? path.slice(path.lastIndexOf("/") + 1) : "default";
+                    param_value = apiParamsMap[name][context] ? apiParamsMap[name][context] : apiParamsMap[name]["default"];
+                } else {
+                    param_value = apiParamsMap[name];
+                }
+
+                options[name] = param_value;
+
+            } else {
+                console.log("Warning - Missing apiParamsMap entry for: ", description);
+            }
+        }
+
+    });
+
+    let varName = proto.slice(-1)[0];
+    if ((apiFunc.split(".").length - 1) > 1) varName = `${entity}_${varName}`;
+    if (Object.keys(options).length == 0)
+        code += `\n${varName} = await CBI.${domain}.${apiFunc}_();`;
+    else {
+        // Assuming options is already a JavaScript object
+        const generateStringFromOptions = (opts) => {
+            let keyValuePairs = [];
+            for (let key in opts) {
+                let value = opts[key];
+                if (typeof value === 'string') {
+                    value = `'${value}'`;
+                }
+                keyValuePairs.push(`${key}=${value}`);
+            }
+            return keyValuePairs.join(',');
+        };
+
+        const signatureString = generateStringFromOptions(options);
+
+        code += `\n${varName} = await CBI.${domain}.${apiFunc}_(${signatureString});`;
+    }
+
+
+    params.forEach(pa => {
+        let name = pa[1].name;
+        code = code.replace(`"${name}"`, `${name}`);
+    });
+    code = code.replace(`"query"`, `query`);
+
+    code += `\nprint(${varName});`
+
+    console.log(code);
+    return code;
+}
+
+function generateRustCode(path, domain, entity, params, isOData) {
+    let code = `let CBI = CardanoBI::new(Some("YOUR-KEY"), Some("YOUR-SECRET")).await.expect("Failed to initialize CardanoBI");`;
+
+    // Determine the API call function
+    let pathSuffix = path.substring(path.indexOf(domain) + domain.length + 1)
+        .replaceAll(/\{(.*?)\}/g, "")
+        .replace("//", "/")
+        .replace(/odata(\/?)/, "");
+    if (pathSuffix.slice(-1) === "/") pathSuffix = pathSuffix.slice(0, -1);
+    let apiFunc = pathSuffix.split("/").join(".");
+
+    // Prepare parameters and options handling
+    let options = {};
+    let args = [];
+    if (isOData) {
+        options['odata'] = "true"; // Add odata as an option, ensuring it's a string
+    }
+
+    params.forEach(pa => {
+        let name = pa[1].name;
+        let scope = pa[1].in;
+
+        if (scope === 'path') {
+            let paramValue = 'defaultParamValue'; // Default fallback
+            if (apiParamsMap[name]) {
+                if (typeof apiParamsMap[name] === 'object') {
+                    let idx = path.lastIndexOf(`{${name}}/`);
+                    let context = idx > 0 ? path.slice(path.lastIndexOf("/") + 1) : "default";
+                    paramValue = apiParamsMap[name][context] ? apiParamsMap[name][context] : apiParamsMap[name]["default"];
+                } else {
+                    paramValue = apiParamsMap[name];
+                }
+            }
+
+            if (typeof paramValue === 'string') {
+                args.push(`Some("${paramValue}")`); // Properly format string values
+            } else {
+                args.push(`Some(${paramValue})`); // Direct function arguments for non-string types
+            }
+        }
+    });
+
+    let varName = apiFunc.split(".").slice(-1)[0];
+    if (apiFunc.split(".").length > 1) varName = `${entity}_${varName}`;
+
+    // Generate options code for Rust function call
+    const optionsCode = Object.keys(options).length > 0 ? `HashMap::from([${Object.entries(options).map(([k, v]) => {
+        return `("${k}", "${v}")`; // Ensure values are string literals and borrowed
+    }).join(", ")}])` : "HashMap::new()";
+
+    // Constructing the function call without leading commas
+    let functionArgs = args.length > 0 ? args.join(', ') + ", " + optionsCode : optionsCode;
+
+    // Generate Rust API function call with arguments and options
+    code += `\nlet ${varName} = CBI.${domain}.${apiFunc}_(${functionArgs}).await.expect("Failed to call endpoint");`;
+    code += `\nprintln!("${varName}: {:?}", ${varName});`;
+
+    console.log(code);
+    return code;
+}
+
 
 const args = process.argv
     .slice(2)
@@ -342,6 +470,7 @@ if (!args['file'] || !args['out-dir']) {
     console.log("\t\t\t excluded-paths={, separated list of paths} (optional)");
     console.log("\t\t\t included-paths={, separated list of paths} (optional)");
     console.log("\t\t\t debug (optional)");
+    console.log("\t\t\t no-cache-gen (optional)");
     process.exit();
 }
 
@@ -355,6 +484,7 @@ var groups = args['groups'];
 var excludedPaths = args['excluded-paths'];
 var includedPaths = args['included-paths'];
 var debug = args['debug'];
+var noCacheGen = args['no-cache-gen'];
 
 if (entities)
     entities = entities.split(",");
@@ -386,6 +516,9 @@ console.log("entities: ", entities);
 console.log("groups: ", groups);
 console.log("excludedPaths: ", excludedPaths);
 console.log("includedPaths: ", includedPaths);
+console.log("noCacheGen: ", noCacheGen);
+
+// process.exit();
 
 // Global Variable
 var domainsMap = {
@@ -406,7 +539,7 @@ var base_path = '/api';
 
 try {
     // const fs = require('fs');
-    
+
     let rawdata = fs.readFileSync(file);
     var json = JSON.parse(rawdata);
     // console.log(json.paths);
@@ -422,7 +555,7 @@ try {
     if (!fs.existsSync(out_dir_cache)) {
         fs.mkdirSync(out_dir_cache, { recursive: true });
     }
-    
+
     let apiCacheCallsArray = [];
     let apiCacheCallBatchSize = 10;
     let counter = 0, batchCounter = 0;
@@ -440,16 +573,16 @@ try {
         let method_entity = p[1][method_type]['tags'][0];
 
         if (p[1][method_type]['tags'] && p[1][method_type]['tags'].length >= 1) {
-            method_domain = p[1][method_type]['tags'][0] === undefined ? undefined : p[1][method_type]['tags'][0].toLowerCase();    
+            method_domain = p[1][method_type]['tags'][0] === undefined ? undefined : p[1][method_type]['tags'][0].toLowerCase();
             if (p[1][method_type]['tags'][1] && p[1][method_type]['tags'][2]) {
-                method_group = p[1][method_type]['tags'][1];    
-                method_entity = p[1][method_type]['tags'][2];    
+                method_group = p[1][method_type]['tags'][1];
+                method_entity = p[1][method_type]['tags'][2];
             } else if (p[1][method_type]['tags'][1] && !p[1][method_type]['tags'][2]) {
-                method_entity = p[1][method_type]['tags'][1] === undefined ? undefined : p[1][method_type]['tags'][1];    
+                method_entity = p[1][method_type]['tags'][1] === undefined ? undefined : p[1][method_type]['tags'][1];
                 method_group = method_entity;
             }
         }
-        
+
         let method_group_dir = method_group;
         let isOData = false;
 
@@ -473,7 +606,7 @@ try {
                         out_dir = outDir + "/" + method_domain_dir;
                         out_file = out_dir + "/" + method_entity + "_main.md";
                     }
-                    
+
                 } else {
                     out_dir = outDir + "/" + method_domain_dir;
                     out_file = out_dir + "/" + method_entity + "_main.md";
@@ -492,7 +625,7 @@ try {
             }
 
             console.log("In scope: ", method_path);
-            apiCacheCallsArray[batchCounter].push(() => loadCacheResponse(CBI, out_dir_cache, method_path, method_domain, method_entity.toLowerCase(), method_params, isOData));    
+            apiCacheCallsArray[batchCounter].push(() => loadCacheResponse(CBI, out_dir_cache, method_path, method_domain, method_entity.toLowerCase(), method_params, isOData));
             counter++;
 
             method_params.forEach(param => {
@@ -504,12 +637,15 @@ try {
     });
 
     // Call all endpoints and wait for all requests to be completed
-    for (let index = 0; index < apiCacheCallsArray.length; index++) {
-        const response = await Promise.all(apiCacheCallsArray[index].map(f => f()));
-        await sleep(2000);
-        console.log("Batch ", index + 1, " / ", apiCacheCallsArray.length);
+    if (!noCacheGen) {
+        for (let index = 0; index < apiCacheCallsArray.length; index++) {
+            const response = await Promise.all(apiCacheCallsArray[index].map(f => f()));
+            await sleep(2000);
+            console.log("Batch ", index + 1, " / ", apiCacheCallsArray.length);
+        }
     }
-    
+
+
 
     Object.keys(tocIndex).forEach(e => {
         tocIndex[e] = tocIndex[e].sort();
@@ -527,16 +663,16 @@ try {
         let method_entity = p[1][method_type]['tags'][0];
 
         if (p[1][method_type]['tags'] && p[1][method_type]['tags'].length >= 1) {
-            method_domain = p[1][method_type]['tags'][0] === undefined ? undefined : p[1][method_type]['tags'][0].toLowerCase();    
+            method_domain = p[1][method_type]['tags'][0] === undefined ? undefined : p[1][method_type]['tags'][0].toLowerCase();
             if (p[1][method_type]['tags'][1] && p[1][method_type]['tags'][2]) {
-                method_group = p[1][method_type]['tags'][1];    
-                method_entity = p[1][method_type]['tags'][2];    
+                method_group = p[1][method_type]['tags'][1];
+                method_entity = p[1][method_type]['tags'][2];
             } else if (p[1][method_type]['tags'][1] && !p[1][method_type]['tags'][2]) {
-                method_entity = p[1][method_type]['tags'][1] === undefined ? undefined : p[1][method_type]['tags'][1];    
+                method_entity = p[1][method_type]['tags'][1] === undefined ? undefined : p[1][method_type]['tags'][1];
                 method_group = method_entity;
             }
         }
-        
+
         let method_group_dir = method_group;
         let isOData = false;
 
@@ -572,7 +708,7 @@ try {
                         out_file = out_dir + "/" + method_entity + "_main.md";
                         header_file = out_dir + "/" + method_entity + "_header.md";
                     }
-                    
+
                 } else {
                     out_dir = outDir + "/" + method_domain_dir;
                     out_file = out_dir + "/" + method_entity + "_main.md";
@@ -588,12 +724,12 @@ try {
             console.log("Main File: ", out_file);
             console.log("Header File: ", header_file);
             console.log(Object.entries(p));
-            
+
             // Create output directory if needed
             if (!fs.existsSync(out_dir)) {
                 fs.mkdirSync(out_dir, { recursive: true });
             }
-            
+
             // Formatting
             method_type = method_type.toUpperCase();
             if (method_summary_clean.endsWith("."))
@@ -641,10 +777,10 @@ import ODataBadge from \'@site/src/components/ODataBadge\'; \n\
 ';
                 fs.appendFileSync(header_file, data, 'utf8');
             }
-            
+
             // Parsing Header - Method
             if (!isOData)
-                data = '\n<EndpointBadge type="' + method_type + '"/> ' + method_summary_clean+'<br/>';
+                data = '\n<EndpointBadge type="' + method_type + '"/> ' + method_summary_clean + '<br/>';
             else
                 data = '\n<EndpointBadge type="' + method_type + '"/> ' + method_summary_clean + ' <ODataBadge/><br/>';
             fs.appendFileSync(header_file, data, 'utf8');
@@ -653,7 +789,7 @@ import ODataBadge from \'@site/src/components/ODataBadge\'; \n\
             let badge_class = "badge--success";
             if (method_type == "post")
                 badge_class = "badge--warning";
-            
+
             if (!isOData)
                 data = '\n## <span class="theme-doc-version-badge badge ' + badge_class + '">' + method_type + '</span> ' + method_summary_clean;
             else
@@ -661,7 +797,7 @@ import ODataBadge from \'@site/src/components/ODataBadge\'; \n\
 
             fs.appendFileSync(out_file, data, 'utf8');
 
-            data = '\n\n' + method_description.replace(method_entity, '_`' + method_entity+'`_');
+            data = '\n\n' + method_description.replace(method_entity, '_`' + method_entity + '`_');
             fs.appendFileSync(out_file, data, 'utf8');
 
             data = '\n\n`' + method_type + ' ' + method_path + '`';
@@ -673,11 +809,11 @@ import ODataBadge from \'@site/src/components/ODataBadge\'; \n\
 \n\
 ';
                 fs.appendFileSync(out_file, data, 'utf8');
-    
+
                 data = '|Name|Description|In|Type|Required| \n\
 |---|---|---|---|---|\n';
                 fs.appendFileSync(out_file, data, 'utf8');
-    
+
                 method_params.forEach(param => {
                     let required = param[1].required ? param[1].required : "false";
                     data = '| ' + param[1].name + '|' + param[1].description + '|' + param[1].in + '|' + param[1].schema.type + '|' + required + '|\n';
@@ -687,6 +823,8 @@ import ODataBadge from \'@site/src/components/ODataBadge\'; \n\
 
             // Parsing - Code samples
             let codeNodejs = generateNodejsCode(method_path, method_domain, method_entity.toLowerCase(), method_params, isOData);
+            let codePython = generatePythonCode(method_path, method_domain, method_entity.toLowerCase(), method_params, isOData);
+            let codeRust = generateRustCode(method_path, method_domain, method_entity.toLowerCase(), method_params, isOData);
 
             data = '\n\n### 👨‍💻 Code samples \n\
 \n\
@@ -701,7 +839,14 @@ import ODataBadge from \'@site/src/components/ODataBadge\'; \n\
 <TabItem value="py" label="Python"> \n\
 \n\
 \```py \n\
-import coming.soon 😀 \n\
+'+ codePython + ' \n\
+\``` \n\
+\n\
+</TabItem> \n\
+<TabItem value="rust" label="Rust"> \n\
+\n\
+\```rust \n\
+'+ codeRust + ' \n\
 \``` \n\
 \n\
 </TabItem> \n\
@@ -710,7 +855,7 @@ import coming.soon 😀 \n\
             fs.appendFileSync(out_file, data, 'utf8');
 
             // Parsing - Response Codes
-            
+
             // Find response codes in pre-fetch cache on disk
             // let responseFromCache = "";
             let responseFromCache = loadResponseFromCache(out_dir_cache, method_path);
@@ -720,30 +865,30 @@ import coming.soon 😀 \n\
 <Tabs groupId="response-type"> \n\
 ';
             fs.appendFileSync(out_file, data, 'utf8');
-    
+
             method_responses.forEach(mr => {
                 let mr_code = mr[0];
-                let mr_description = mr[1]['description']; 
+                let mr_description = mr[1]['description'];
                 let mr_style_attr = "{{className: styles.green}}";
                 let mr_content = mr[1].content;
 
                 let mr_schema_type = mr[1].content === undefined ? undefined : mr[1].content['application/json'].schema.type === undefined ? "single" : mr[1].content['application/json'].schema.type;
                 let mr_schema_ref = mr_schema_type === undefined ? undefined : mr_schema_type == "single" ? mr[1].content['application/json'].schema.$ref : mr[1].content['application/json'].schema.items.$ref;
-                let mr_schema_entity_name = mr_schema_ref === undefined ? undefined :  mr_schema_ref.substr(mr_schema_ref.lastIndexOf('/') + 1);
-                let mr_schema_entity_props = mr_schema_entity_name === undefined ? undefined :  Object.entries(json.components.schemas[mr_schema_entity_name]['properties']);  
+                let mr_schema_entity_name = mr_schema_ref === undefined ? undefined : mr_schema_ref.substr(mr_schema_ref.lastIndexOf('/') + 1);
+                let mr_schema_entity_props = mr_schema_entity_name === undefined ? undefined : Object.entries(json.components.schemas[mr_schema_entity_name]['properties']);
 
                 if (mr_code != "200") {
                     mr_style_attr = "{{className: styles.red}}";
                 }
 
-                data = '<TabItem value="'+mr_code+'" label="'+mr_code+'" attributes='+mr_style_attr+'> \n\
+                data = '<TabItem value="' + mr_code + '" label="' + mr_code + '" attributes=' + mr_style_attr + '> \n\
 \n\
 ';
                 fs.appendFileSync(out_file, data, 'utf8');
 
                 data = '`' + mr_description + '`\n\n';
                 fs.appendFileSync(out_file, data, 'utf8');
-                
+
                 data = '```json\n';
                 fs.appendFileSync(out_file, data, 'utf8');
 
@@ -765,7 +910,7 @@ import coming.soon 😀 \n\
     ';
                             fs.appendFileSync(out_file, data, 'utf8');
                         }
-        
+
                         let objLength = mr_schema_entity_props.length;
                         let count = 0;
                         mr_schema_entity_props.forEach(pr => {
@@ -774,22 +919,22 @@ import coming.soon 😀 \n\
                             if (pr[1].format == "date-time") {
                                 value = '"2019-08-24T14:15:22Z"';
                             }
-                            if (count==objLength)
+                            if (count == objLength)
                                 data = spacer + '"' + pr[0] + '": ' + value + '\n';
                             else
                                 data = spacer + '"' + pr[0] + '": ' + value + ', \n';
                             fs.appendFileSync(out_file, data, 'utf8');
                         });
-                        
-        
+
+
                         if (mr_schema_type == "array") {
                             data = ' } \n\
     ] \n\
     ';
                             fs.appendFileSync(out_file, data, 'utf8');
-                        }       
+                        }
                     }
-                                 
+
                 } else {
                     data = 'Response schema is undefined.\n';
                     fs.appendFileSync(out_file, data, 'utf8');
@@ -811,148 +956,148 @@ import coming.soon 😀 \n\
 \n\
 <Tabs groupId="response-type"> \n\
 ';
-                        fs.appendFileSync(out_file, data, 'utf8');
-                
-                        method_responses.forEach(mr => {
-                            let mr_code = mr[0];
-                            let mr_description = mr[1]['description']; 
-                            let mr_style_attr = "{{className: styles.green}}";
-                            let mr_content = mr[1].content;
+            fs.appendFileSync(out_file, data, 'utf8');
 
-                            let mr_schema_type = mr[1].content === undefined ? undefined : mr[1].content['application/json'].schema.type === undefined ? "single" : mr[1].content['application/json'].schema.type;
-                            let mr_schema_ref = mr_schema_type === undefined ? undefined : mr_schema_type == "single" ? mr[1].content['application/json'].schema.$ref : mr[1].content['application/json'].schema.items.$ref;
-                            let mr_schema_entity_name = mr_schema_ref === undefined ? undefined :  mr_schema_ref.substr(mr_schema_ref.lastIndexOf('/') + 1);
-                            let mr_schema_entity_props = mr_schema_entity_name === undefined ? undefined : Object.entries(json.components.schemas[mr_schema_entity_name].properties); 
-            
-                            if (mr_code != "200") {
-                                mr_style_attr = "{{className: styles.red}}";
-                            }
-            
-                            data = '<TabItem value="'+mr_code+'" label="'+mr_code+'" attributes='+mr_style_attr+'>\n';
-                            fs.appendFileSync(out_file, data, 'utf8');
-            
-                            data = '\nStatus Code **' + mr_code + '**\n\n';
+            method_responses.forEach(mr => {
+                let mr_code = mr[0];
+                let mr_description = mr[1]['description'];
+                let mr_style_attr = "{{className: styles.green}}";
+                let mr_content = mr[1].content;
 
-                            fs.appendFileSync(out_file, data, 'utf8');
-                            
-                            data = '|Name|Type|Description| \n\
+                let mr_schema_type = mr[1].content === undefined ? undefined : mr[1].content['application/json'].schema.type === undefined ? "single" : mr[1].content['application/json'].schema.type;
+                let mr_schema_ref = mr_schema_type === undefined ? undefined : mr_schema_type == "single" ? mr[1].content['application/json'].schema.$ref : mr[1].content['application/json'].schema.items.$ref;
+                let mr_schema_entity_name = mr_schema_ref === undefined ? undefined : mr_schema_ref.substr(mr_schema_ref.lastIndexOf('/') + 1);
+                let mr_schema_entity_props = mr_schema_entity_name === undefined ? undefined : Object.entries(json.components.schemas[mr_schema_entity_name].properties);
+
+                if (mr_code != "200") {
+                    mr_style_attr = "{{className: styles.red}}";
+                }
+
+                data = '<TabItem value="' + mr_code + '" label="' + mr_code + '" attributes=' + mr_style_attr + '>\n';
+                fs.appendFileSync(out_file, data, 'utf8');
+
+                data = '\nStatus Code **' + mr_code + '**\n\n';
+
+                fs.appendFileSync(out_file, data, 'utf8');
+
+                data = '|Name|Type|Description| \n\
 |---|---|---|\n';
+                fs.appendFileSync(out_file, data, 'utf8');
+
+                let sub_refs = [];
+                if (mr_content) {
+                    mr_schema_entity_props.forEach(pr => {
+                        let pr_name = pr[0];
+                        let pr_type = pr[1].type;
+                        let pr_format = pr[1].format;
+                        let pr_description = pr[1].description;
+                        let pr_sub_ref = pr[1].$ref;
+
+                        // attribute of simple type
+                        if (pr_sub_ref === undefined) {
+                            if (pr_format === undefined)
+                                data = '| ' + pr_name + '|' + pr_type + '|' + pr_description + '|\n';
+                            else
+                                data = '| ' + pr_name + '|' + pr_type + '(' + pr_format + ')|' + pr_description + '|\n';
                             fs.appendFileSync(out_file, data, 'utf8');
-            
-                            let sub_refs = [];
-                            if (mr_content) {
-                                mr_schema_entity_props.forEach(pr => {
-                                    let pr_name = pr[0];
-                                    let pr_type = pr[1].type;
-                                    let pr_format = pr[1].format;
-                                    let pr_description = pr[1].description;
-                                    let pr_sub_ref = pr[1].$ref;
+                        } else {
+                            // attribute of complex type which will be presented as a sub schema
+                            let pr_sub_name = pr_sub_ref.substring(21);
+                            sub_refs.push(pr_sub_name);
 
-                                    // attribute of simple type
-                                    if (pr_sub_ref === undefined) {
-                                        if (pr_format === undefined)
-                                            data = '| ' + pr_name + '|' + pr_type + '|' + pr_description + '|\n';
-                                        else
-                                            data = '| ' + pr_name + '|' + pr_type + '(' + pr_format + ')|' + pr_description + '|\n';
-                                        fs.appendFileSync(out_file, data, 'utf8');
-                                    } else {
-                                        // attribute of complex type which will be presented as a sub schema
-                                        let pr_sub_name = pr_sub_ref.substring(21);
-                                        sub_refs.push(pr_sub_name);
-
-                                        data = '| ' + pr_name + '|' + pr_sub_name + '|' + pr_description + '|\n';
-                                        fs.appendFileSync(out_file, data, 'utf8');
-                                    }
-                                });
-
-                                // sub schema level 1
-                                let sub_refs2 = [];
-                                for (let i = 0; i < sub_refs.length; i++) {
-                                    let sub_schema_name = sub_refs[i];
-                                    let sub_schema_entity_props = Object.entries(json.components.schemas[sub_schema_name].properties); 
-
-                                    data = '\n'+sub_schema_name+'\n\n';
-                                    fs.appendFileSync(out_file, data, 'utf8');
-
-                                    data = '|Name|Type|Description| \n\
-|---|---|---|\n';
-                                    fs.appendFileSync(out_file, data, 'utf8');
-
-                                    sub_schema_entity_props.forEach(pr => {
-                                        let pr_name = pr[0];
-                                        let pr_type = pr[1].type;
-                                        let pr_format = pr[1].format;
-                                        let pr_description = pr[1].description;
-                                        let pr_sub_ref = pr[1].$ref;
-    
-                                        // attribute of simple type
-                                        if (pr_sub_ref === undefined) {
-                                            if (pr_format === undefined)
-                                                data = '| ' + pr_name + '|' + pr_type + '|' + pr_description + '|\n';
-                                            else
-                                                data = '| ' + pr_name + '|' + pr_type + '(' + pr_format + ')|' + pr_description + '|\n';
-                                            fs.appendFileSync(out_file, data, 'utf8');
-                                        } else {
-                                            // attribute of complex type which will be presented as a sub schema
-                                            let pr_sub_name = pr_sub_ref.substring(21);
-                                            sub_refs2.push(pr_sub_name);
-    
-                                            data = '| ' + pr_name + '|' + pr_sub_name + '|' + pr_description + '|\n';
-                                            fs.appendFileSync(out_file, data, 'utf8');
-                                        }
-                                    });
-                                }
-
-                                // sub schema level 2
-                                let sub_refs3 = [];
-                                for (let i = 0; i < sub_refs2.length; i++) {
-                                    let sub_schema_name = sub_refs2[i];
-                                    let sub_schema_entity_props = Object.entries(json.components.schemas[sub_schema_name].properties); 
-
-                                    data = '\n'+sub_schema_name+'\n\n';
-                                    fs.appendFileSync(out_file, data, 'utf8');
-
-                                    data = '|Name|Type|Description| \n\
-|---|---|---|\n';
-                                    fs.appendFileSync(out_file, data, 'utf8');
-
-                                    sub_schema_entity_props.forEach(pr => {
-                                        let pr_name = pr[0];
-                                        let pr_type = pr[1].type;
-                                        let pr_format = pr[1].format;
-                                        let pr_description = pr[1].description;
-                                        let pr_sub_ref = pr[1].$ref;
-    
-                                        // attribute of simple type
-                                        if (pr_sub_ref === undefined) {
-                                            if (pr_format === undefined)
-                                                data = '| ' + pr_name + '|' + pr_type + '|' + pr_description + '|\n';
-                                            else
-                                                data = '| ' + pr_name + '|' + pr_type + '(' + pr_format + ')|' + pr_description + '|\n';
-                                            fs.appendFileSync(out_file, data, 'utf8');
-                                        } else {
-                                            // attribute of complex type which will be presented as a sub schema
-                                            let pr_sub_name = pr_sub_ref.substring(21);
-                                            sub_refs2.push(pr_sub_name);
-    
-                                            data = '| ' + pr_name + '|' + pr_sub_name + '|' + pr_description + '|\n';
-                                            fs.appendFileSync(out_file, data, 'utf8');
-                                        }
-                                    });
-                                }
-                                                
-                            } else {
-                                data = 'Response schema is undefined.\n';
-                                fs.appendFileSync(out_file, data, 'utf8');
-                            }
-            
-                            data = '</TabItem> \n';
+                            data = '| ' + pr_name + '|' + pr_sub_name + '|' + pr_description + '|\n';
                             fs.appendFileSync(out_file, data, 'utf8');
                         }
-                        );
-            
-                        data = '</Tabs>\n';
+                    });
+
+                    // sub schema level 1
+                    let sub_refs2 = [];
+                    for (let i = 0; i < sub_refs.length; i++) {
+                        let sub_schema_name = sub_refs[i];
+                        let sub_schema_entity_props = Object.entries(json.components.schemas[sub_schema_name].properties);
+
+                        data = '\n' + sub_schema_name + '\n\n';
                         fs.appendFileSync(out_file, data, 'utf8');
+
+                        data = '|Name|Type|Description| \n\
+|---|---|---|\n';
+                        fs.appendFileSync(out_file, data, 'utf8');
+
+                        sub_schema_entity_props.forEach(pr => {
+                            let pr_name = pr[0];
+                            let pr_type = pr[1].type;
+                            let pr_format = pr[1].format;
+                            let pr_description = pr[1].description;
+                            let pr_sub_ref = pr[1].$ref;
+
+                            // attribute of simple type
+                            if (pr_sub_ref === undefined) {
+                                if (pr_format === undefined)
+                                    data = '| ' + pr_name + '|' + pr_type + '|' + pr_description + '|\n';
+                                else
+                                    data = '| ' + pr_name + '|' + pr_type + '(' + pr_format + ')|' + pr_description + '|\n';
+                                fs.appendFileSync(out_file, data, 'utf8');
+                            } else {
+                                // attribute of complex type which will be presented as a sub schema
+                                let pr_sub_name = pr_sub_ref.substring(21);
+                                sub_refs2.push(pr_sub_name);
+
+                                data = '| ' + pr_name + '|' + pr_sub_name + '|' + pr_description + '|\n';
+                                fs.appendFileSync(out_file, data, 'utf8');
+                            }
+                        });
+                    }
+
+                    // sub schema level 2
+                    let sub_refs3 = [];
+                    for (let i = 0; i < sub_refs2.length; i++) {
+                        let sub_schema_name = sub_refs2[i];
+                        let sub_schema_entity_props = Object.entries(json.components.schemas[sub_schema_name].properties);
+
+                        data = '\n' + sub_schema_name + '\n\n';
+                        fs.appendFileSync(out_file, data, 'utf8');
+
+                        data = '|Name|Type|Description| \n\
+|---|---|---|\n';
+                        fs.appendFileSync(out_file, data, 'utf8');
+
+                        sub_schema_entity_props.forEach(pr => {
+                            let pr_name = pr[0];
+                            let pr_type = pr[1].type;
+                            let pr_format = pr[1].format;
+                            let pr_description = pr[1].description;
+                            let pr_sub_ref = pr[1].$ref;
+
+                            // attribute of simple type
+                            if (pr_sub_ref === undefined) {
+                                if (pr_format === undefined)
+                                    data = '| ' + pr_name + '|' + pr_type + '|' + pr_description + '|\n';
+                                else
+                                    data = '| ' + pr_name + '|' + pr_type + '(' + pr_format + ')|' + pr_description + '|\n';
+                                fs.appendFileSync(out_file, data, 'utf8');
+                            } else {
+                                // attribute of complex type which will be presented as a sub schema
+                                let pr_sub_name = pr_sub_ref.substring(21);
+                                sub_refs2.push(pr_sub_name);
+
+                                data = '| ' + pr_name + '|' + pr_sub_name + '|' + pr_description + '|\n';
+                                fs.appendFileSync(out_file, data, 'utf8');
+                            }
+                        });
+                    }
+
+                } else {
+                    data = 'Response schema is undefined.\n';
+                    fs.appendFileSync(out_file, data, 'utf8');
+                }
+
+                data = '</TabItem> \n';
+                fs.appendFileSync(out_file, data, 'utf8');
+            }
+            );
+
+            data = '</Tabs>\n';
+            fs.appendFileSync(out_file, data, 'utf8');
 
 
 
@@ -981,11 +1126,11 @@ import coming.soon 😀 \n\
             console.log("Merging files: ", main_file, header_file, " into: ", target_file);
 
             // open target file for appending
-            var w = fs.createWriteStream(target_file, {flags: 'a'});
+            var w = fs.createWriteStream(target_file, { flags: 'a' });
             // open header file for reading
             var r = fs.createReadStream(header_file);
 
-            w.on('close', function() {
+            w.on('close', function () {
                 if (debug) console.log("done writing header");
             });
 
@@ -994,7 +1139,7 @@ import coming.soon 😀 \n\
             // open main file for reading
             var r = fs.createReadStream(main_file);
 
-            w.on('close', function() {
+            w.on('close', function () {
                 if (debug) console.log("done writing main");
 
                 // Cleaning _main and _header files

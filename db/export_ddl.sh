@@ -5,7 +5,7 @@ set -euo pipefail
 # export_ddl.sh — Export DDL from the CardanoBI PostgreSQL database
 #
 # Exports:
-#   1. Tables prefixed "cbi_"          (DDL + indexes + constraints)
+#   1. Tables prefixed "_cbi_"         (DDL + indexes + constraints)
 #   2. All materialized views           (DDL + indexes)
 #   3. Functions prefixed "cbi_"        (full CREATE OR REPLACE FUNCTION)
 #
@@ -51,11 +51,11 @@ echo
 # ---------------------------------------------------------------------------
 # 1. Tables prefixed "cbi_"
 # ---------------------------------------------------------------------------
-echo "--- Exporting cbi_* tables ---"
+echo "--- Exporting _cbi_* tables ---"
 
 TABLE_LIST=$(psql -d "$DB" -t -A -c \
     "SELECT tablename FROM pg_tables
-     WHERE schemaname = 'public' AND tablename LIKE 'cbi_%'
+     WHERE schemaname = 'public' AND tablename LIKE '_cbi_%'
      ORDER BY tablename;")
 
 TABLE_COUNT=0

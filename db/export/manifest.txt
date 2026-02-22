@@ -1,0 +1,27 @@
+table  _cbi_active_stake_cache_account
+table  _cbi_active_stake_cache_epoch
+table  _cbi_active_stake_cache_pool
+table  _cbi_address_info_cache
+table  _cbi_address_stats_cache
+table  _cbi_asset_addresses_cache
+table  _cbi_asset_addresses_cache_adahandle
+table  _cbi_asset_cache
+table  _cbi_cache_handler_state
+table  _cbi_polls
+table  _cbi_pool_params
+table  _cbi_pool_stats_cache
+table  _cbi_stake_distribution_cache
+matview  address_info_view
+matview  address_stat_view
+matview  epoch_stake_view
+matview  pool_stat_view
+function  cbi_active_stake_cache_update  oid=2098513
+function  cbi_address_info_cache_update  oid=4052947
+function  cbi_address_stats_cache_update  oid=4113755
+function  cbi_asset_addresses_cache_update  oid=2784274
+function  cbi_asset_addresses_cache_update  oid=6312871
+function  cbi_asset_cache_update  oid=2781082
+function  cbi_cache_handler_init  oid=2098403
+function  cbi_cache_handler_remove  oid=4300735
+function  cbi_pool_stats_cache_update  oid=4139624
+function  cbi_stake_distribution_cache_update  oid=2765281

@@ -64,7 +64,7 @@ for TBL in $TABLE_LIST; do
     pg_dump -d "$DB" --schema-only --no-owner --no-privileges -t "public.${TBL}" > "$FILE"
     echo "  [table] $TBL"
     echo "table  $TBL" >> "$MANIFEST"
-    (( TABLE_COUNT++ ))
+    TABLE_COUNT=$((TABLE_COUNT + 1))
 done
 
 echo "  Exported $TABLE_COUNT table(s)."
@@ -89,7 +89,7 @@ for MV in $MATVIEW_LIST; do
 
     echo "  [matview] $MV"
     echo "matview  $MV" >> "$MANIFEST"
-    (( MV_COUNT++ ))
+    MV_COUNT=$((MV_COUNT + 1))
 done
 
 echo "  Exported $MV_COUNT materialized view(s)."
@@ -123,7 +123,7 @@ for ROW in $FUNC_LIST; do
 
     echo "  [function] $FNAME (oid=$OID)"
     echo "function  $FNAME  oid=$OID" >> "$MANIFEST"
-    (( FUNC_COUNT++ ))
+    FUNC_COUNT=$((FUNC_COUNT + 1))
 done
 
 echo "  Exported $FUNC_COUNT function(s)."
